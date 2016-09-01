@@ -4,7 +4,7 @@
 
     To get one, follow this link, follow the directions and press "Create" at the end:
 
-    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=E6:BB:37:27:60:E6:C5:C5:8D:2D:F6:74:B2:BE:99:F0:72:51:B6:34%3Bcom.example.moni.mapsapp
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=E6:BB:37:27:60:E6:C5:C5:8D:2D:F6:74:B2:BE:99:F0:72:51:B6:34%3Bcom.example.moni.comehomesafe
 
     You can also add your credentials to an existing key, using this line:
     E6:BB:37:27:60:E6:C5:C5:8D:2D:F6:74:B2:BE:99:F0:72:51:B6:34;com.example.moni.mapsapp
