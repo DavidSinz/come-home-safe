@@ -38,6 +38,10 @@ public class NavigationActivity extends FragmentActivity
     }
 
     //TODO HTTP-Kommunikation für Routenberechnung aus Google Maps
+    // https://maps.googleapis.com/maps/api/directions/json?origin=
+    // origin, destination & key --> json-datei zum daten auslesen
+    //directions api bereits aktiviert
+    //async-task --> url von oben
 
 
 
