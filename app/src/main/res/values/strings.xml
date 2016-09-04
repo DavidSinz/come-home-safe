@@ -9,4 +9,6 @@
 
     <string name="title_activity_maps">Map</string>
 
+    <string name="text_start_btn">Start</string>
+
 </resources>
