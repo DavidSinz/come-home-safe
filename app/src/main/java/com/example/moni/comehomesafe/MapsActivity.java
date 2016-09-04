@@ -1,7 +1,11 @@
 package com.example.moni.comehomesafe;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -9,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.google.android.gms.drive.internal.StringListResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,8 +25,13 @@ public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, View.OnClickListener {
 
     private GoogleMap mMap;
-    private static final int LATITUDE_GERMANY = 51;
-    private static final int LONGITUDE_GERMANY = 10;
+    private static final int LAT_GERMANY = 51;
+    private static final int LNG_GERMANY = 10;
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private Location location;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +43,22 @@ public class MapsActivity extends FragmentActivity
         mapFragment.getMapAsync(this);
 
         initButtons();
+
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, this, 0, 0);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        //oder ganze activity als "implements LocationListener" und dann hier nur "this"
     }
 
     private void initButtons() {
@@ -48,6 +74,8 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onClick(View v) {
+        double startLat = 0;
+        double startLng = 0;
         switch (v.getId()) {
             case R.id.button_gps_location:
                 if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -62,6 +90,8 @@ public class MapsActivity extends FragmentActivity
                     return;
                 }
                 mMap.setMyLocationEnabled(true); //zum orten
+                //startLat & startLng initalisieren
+
 
             case R.id.button_destination:
                 Intent intentDestination = new Intent(this, SelectDestinationActivity.class);
@@ -73,6 +103,11 @@ public class MapsActivity extends FragmentActivity
 
             case R.id.button_start_navigation:
                 Intent intentStartNav = new Intent(this, NavigationActivity.class);
+                //intentStartNav.putExtra(); Start & Ziel übergeben für Routenberechnung
+                startLat = location.getLatitude();
+                startLng = location.getLongitude();
+                intentStartNav.putExtra("START_LAT", startLat);
+                intentStartNav.putExtra("START_LNG", startLat);
                 startActivity(intentStartNav);
         }
 
@@ -93,7 +128,7 @@ public class MapsActivity extends FragmentActivity
         mMap = googleMap;
 
         // Add a marker and move the camera
-        LatLng germany = new LatLng(LATITUDE_GERMANY, LONGITUDE_GERMANY);
+        LatLng germany = new LatLng(LAT_GERMANY, LNG_GERMANY);
         //mMap.addMarker(new MarkerOptions().position(germany).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(germany));
     }
