@@ -1,5 +1,6 @@
 package com.example.moni.comehomesafe;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.design.widget.FloatingActionButton;
@@ -82,11 +83,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            Intent map = new Intent(this, MapsActivity.class);
+            startActivity(map);
         } else if (id == R.id.nav_gallery) {
-
+            Intent places = new Intent(this, PlacesActivity.class);
+            startActivity(places);
         } else if (id == R.id.nav_slideshow) {
-
+            Intent contacts = new Intent(this, ContactsActivity.class);
+            startActivity(contacts);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
