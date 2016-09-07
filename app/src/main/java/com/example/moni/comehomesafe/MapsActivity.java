@@ -102,12 +102,15 @@ public class MapsActivity extends FragmentActivity
                 startActivity(intentAddComp);
 
             case R.id.button_start_navigation:
-                Intent intentStartNav = new Intent(this, NavigationActivity.class);
-                //intentStartNav.putExtra(); Start & Ziel übergeben für Routenberechnung
                 startLat = location.getLatitude();
                 startLng = location.getLongitude();
-                intentStartNav.putExtra("START_LAT", startLat);
-                intentStartNav.putExtra("START_LNG", startLat);
+                LatLng start = new LatLng(startLat, startLng);
+                Bundle args = new Bundle();
+                args.putParcelable("START", start);
+                Intent intentStartNav = new Intent(this, NavigationActivity.class);
+                intentStartNav.putExtra("BUNDLE", args);
+                //destination muss aus SelectDestination übergeben werden
+                //intentStartNav.putExtra("DESTINATION", destination);
                 startActivity(intentStartNav);
         }
 

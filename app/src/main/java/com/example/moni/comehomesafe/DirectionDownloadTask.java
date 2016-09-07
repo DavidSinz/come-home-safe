@@ -1,7 +1,10 @@
 package com.example.moni.comehomesafe;
 
 
+import android.media.MediaRouter;
 import android.os.AsyncTask;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,17 +16,22 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 public class DirectionDownloadTask extends AsyncTask<String, Integer, String>{
 
     private DownloadListener listener;
+    private LatLng start;
+    private LatLng destination;
 
 
     //map oder so, wo die Ergebnisse eingetragen werden
     //in kombi mit adapter
-    public DirectionDownloadTask(DownloadListener listener) {
+    public DirectionDownloadTask(DownloadListener listener, LatLng start, LatLng destination) {
         this.listener = listener;
+        this.start = start;
+        this.destination = destination;
     }
 
 
@@ -61,15 +69,19 @@ public class DirectionDownloadTask extends AsyncTask<String, Integer, String>{
         listener.onDownloadFinished();
     }
 
-    private void processJson(String text) {
+    //mode: driving, by foot etc.
+    //routenalternativen: alternatives = true
+    //als Variablen zur URL hinzufügen
+    private void processJson(String data) {
         try {
-            JSONArray jsonArray = new JSONArray(text);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                //Rauslesen und Verarbeitung der Ergebnisse
-                //int rank = jsonObject.getInt(RANK);
-                //TableItem item = new TableItem(rank, team, playedGames, points, goals, goalsAgainst);
-                //table.add(item);
+            //alt JSONArray jsonArray = new JSONArray(text);
+
+            JSONObject jsonData = new JSONObject(data);
+            JSONArray jsonRoutes = jsonData.getJSONArray("routes");
+            for (int i = 0; i < jsonRoutes.length(); i++) {
+                JSONObject jsonRoute = jsonRoutes.getJSONObject(i);
+                JSONObject overviewPolylineJSON = jsonRoute.getJSONObject("overview_polyline");
+
             }
         } catch (JSONException e) {
             e.printStackTrace();

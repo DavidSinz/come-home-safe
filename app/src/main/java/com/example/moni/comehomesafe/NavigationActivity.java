@@ -13,14 +13,20 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.net.URLEncoder;
+
 public class NavigationActivity extends FragmentActivity
         implements OnMapReadyCallback, DownloadListener {
 
-    private static final String ADDRESS = "https://maps.googleapis.com/maps/api/directions/json?origin=";
+    private static final String ADDRESS = "https://maps.googleapis.com/maps/api/directions/json?";
 
     private GoogleMap mMap;
     private double startLat;
     private double startLng;
+    private LatLng start;
+    private LatLng destination;
+
+    private static final String GOOGLE_API_KEY = "AIzaSyCuvRBq6Ckbrx0qRednmupRMF3MXX0mgso";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +39,13 @@ public class NavigationActivity extends FragmentActivity
 
         createAddress();
 
-        //hinter this,
-        new DirectionDownloadTask(this).execute(createAddress());
+        //hinter this, oder als try new.. und catch exception
+        new DirectionDownloadTask(this, start, destination).execute(createAddress());
 
-        Intent intent = getIntent();
-        Bundle b = intent.getExtras();
-        if(b!=null) {
-            startLat = b.getDouble("START_LAT");
-            startLng = b.getDouble("START_LNG");
+        Bundle bundle = getIntent().getParcelableExtra("BUNDLE");
+        if(bundle!=null) {
+            start = bundle.getParcelable("START");
+            //destination auslesen
         }
 
     }
@@ -52,9 +57,10 @@ public class NavigationActivity extends FragmentActivity
     //async-task --> url von oben
 
     private String createAddress(){
-        //TODO Adresse zusammenbauen
-        String address = ADDRESS + startLat + startLng;
-        return address;
+        //String urlOrigin = URLEncoder.encode(start, "utf-8");
+        //überprüfen, ob start & destination als LatLng richtig ausgegeben werden
+
+        return ADDRESS + "origin=" + start + "&destination=" + destination + "&key=" + GOOGLE_API_KEY;
     }
 
 
