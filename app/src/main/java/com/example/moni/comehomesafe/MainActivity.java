@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     @Override
@@ -82,13 +83,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            Intent map = new Intent(this, MapsActivity.class);
+        if (id == R.id.nav_map) {
+            Intent map = new Intent(this, MapsActivityAlt.class);
             startActivity(map);
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_places) {
             Intent places = new Intent(this, PlacesActivity.class);
             startActivity(places);
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_contacts) {
             Intent contacts = new Intent(this, ContactsActivity.class);
             startActivity(contacts);
         } else if (id == R.id.nav_manage) {
@@ -103,5 +104,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
+
+
+
+
+
 
