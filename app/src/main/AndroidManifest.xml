@@ -10,7 +10,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    //Zustand Internetverbindung
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 
@@ -42,6 +41,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".NavigationActivity">
+        </activity>
+
+        <activity
+            android:name=".PlacesActivity">
+        </activity>
+
+        <activity
+            android:name=".MapsActivityAlt">
+        </activity>
+
+        <activity
+            android:name=".AddCompanionActivity">
+        </activity>
+
+        <activity
+            android:name=".ContactsActivity">
+        </activity>
+
+        <activity
+            android:name=".SelectDestinationActivity">
+        </activity>
+
+
     </application>
 
 </manifest>

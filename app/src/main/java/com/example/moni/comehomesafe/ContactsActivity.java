@@ -1,7 +1,13 @@
 package com.example.moni.comehomesafe;
 
-/**
- * Created by david_000 on 07.09.2016.
- */
-public class ContactsActivity {
+
+import android.app.Activity;
+import android.os.Bundle;
+
+public class ContactsActivity extends Activity{
+
+    @Override
+    protected void onCreate(Bundle SavedInstanceState){
+        super.onCreate(SavedInstanceState);
+    }
 }
