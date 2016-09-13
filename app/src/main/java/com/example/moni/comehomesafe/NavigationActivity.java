@@ -32,7 +32,7 @@ public class NavigationActivity extends FragmentActivity
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private static final String ADDRESS = "https://maps.googleapis.com/maps/api/directions/json?";
-
+    private static final String GOOGLE_API_KEY = "AIzaSyCuvRBq6Ckbrx0qRednmupRMF3MXX0mgso";
     private static final long FASTEST_INTERVAL = 10000;
     private static final long UPDATE_INTERVAL = 5000;
 
@@ -42,13 +42,14 @@ public class NavigationActivity extends FragmentActivity
     private LatLng start;
     private LatLng destination;
     private LatLng currentLocation;
+    private String companion;
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLocation;
     private LocationManager locationManager;
     private LocationRequest mLocationRequest;
 
-    private static final String GOOGLE_API_KEY = "AIzaSyCuvRBq6Ckbrx0qRednmupRMF3MXX0mgso";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,8 @@ public class NavigationActivity extends FragmentActivity
         Bundle bundle = getIntent().getParcelableExtra("BUNDLE");
         if(bundle!=null) {
             start = bundle.getParcelable("START");
-            //destination auslesen
+            destination = bundle.getParcelable("DESTINATION");
+            companion = bundle.getString("COMPANION");
         }
     }
 

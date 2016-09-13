@@ -21,10 +21,14 @@ import com.google.android.gms.maps.model.LatLng;
 public class MapsActivityAlt extends FragmentActivity
         implements OnMapReadyCallback, View.OnClickListener {
 
+    private static final int REQUESTCODE_DESTINATION = 1;
+    private static final int REQUESTCODE_COMPANION = 2;
     private GoogleMap mMap;
     private static final int LAT_GERMANY = 51;
     private static final int LNG_GERMANY = 10;
     private Location location;
+    private LatLng destination;
+    private String companion;
 
 
     @Override
@@ -95,11 +99,11 @@ public class MapsActivityAlt extends FragmentActivity
 
             case R.id.button_destination:
                 Intent intentDestination = new Intent(this, SelectDestinationActivity.class);
-                startActivity(intentDestination);
+                startActivityForResult(intentDestination, REQUESTCODE_DESTINATION);
 
             case R.id.button_add_companion:
                 Intent intentAddComp = new Intent(this, AddCompanionActivity.class);
-                startActivity(intentAddComp);
+                startActivityForResult(intentAddComp, REQUESTCODE_COMPANION);
 
             case R.id.button_start_navigation:
                 startLat = location.getLatitude();
@@ -107,13 +111,34 @@ public class MapsActivityAlt extends FragmentActivity
                 LatLng start = new LatLng(startLat, startLng);
                 Bundle args = new Bundle();
                 args.putParcelable("START", start);
+                args.putParcelable("DESTINATION", destination);
+                args.putString("COMPANION", companion);
                 Intent intentStartNav = new Intent(this, NavigationActivity.class);
                 intentStartNav.putExtra("BUNDLE", args);
-                //destination muss aus SelectDestination übergeben werden
-                //intentStartNav.putExtra("DESTINATION", destination);
                 startActivity(intentStartNav);
         }
 
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUESTCODE_DESTINATION) {
+            if (resultCode == RESULT_OK) {
+                if(data != null){
+                    destination = data.getExtras().getParcelable("RESULT");
+                }
+            }
+        } else if(requestCode == REQUESTCODE_COMPANION){
+            if(resultCode == RESULT_OK){
+                if(data != null){
+                    companion = data.getExtras().getString("RESULT");
+                    //Datentyp für companion?
+                    //TODO: Lokale variable anlegen, wie oben hier auslesen und dem Intent für NavAct übergeben und in NacAct auslesen
+                }
+
+            }
+        }
     }
 
 
@@ -128,10 +153,7 @@ public class MapsActivityAlt extends FragmentActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker and move the camera
         LatLng germany = new LatLng(LAT_GERMANY, LNG_GERMANY);
-        //mMap.addMarker(new MarkerOptions().position(germany).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(germany, 6));
     }
 
