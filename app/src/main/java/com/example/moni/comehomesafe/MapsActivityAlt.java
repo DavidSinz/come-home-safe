@@ -134,7 +134,6 @@ public class MapsActivityAlt extends FragmentActivity
                 if(data != null){
                     companion = data.getExtras().getString("RESULT");
                     //Datentyp für companion?
-                    //TODO: Lokale variable anlegen, wie oben hier auslesen und dem Intent für NavAct übergeben und in NacAct auslesen
                 }
 
             }
