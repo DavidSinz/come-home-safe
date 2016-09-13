@@ -45,7 +45,7 @@ public class MapsActivityAlt extends FragmentActivity
         initButtons();
 
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, this, 0, 0);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -57,7 +57,7 @@ public class MapsActivityAlt extends FragmentActivity
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         //oder ganze activity als "implements LocationListener" und dann hier nur "this"
     }
 
@@ -133,6 +133,6 @@ public class MapsActivityAlt extends FragmentActivity
         // Add a marker and move the camera
         LatLng germany = new LatLng(LAT_GERMANY, LNG_GERMANY);
         //mMap.addMarker(new MarkerOptions().position(germany).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(germany));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(germany, 6));
     }
 }

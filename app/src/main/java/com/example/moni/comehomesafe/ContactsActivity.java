@@ -7,7 +7,7 @@ import android.os.Bundle;
 public class ContactsActivity extends Activity{
 
     @Override
-    protected void onCreate(Bundle SavedInstanceState){
-        super.onCreate(SavedInstanceState);
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
     }
 }

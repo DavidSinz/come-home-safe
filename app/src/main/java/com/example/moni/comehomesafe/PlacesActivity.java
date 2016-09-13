@@ -8,9 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-/**
- * Created by david_000 on 07.09.2016.
- */
 
 public class PlacesActivity extends FragmentActivity {
     ListView listView;
