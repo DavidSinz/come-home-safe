@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -106,8 +107,9 @@ public class MapsActivityAlt extends FragmentActivity
                 startActivityForResult(intentAddComp, REQUESTCODE_COMPANION);
 
             case R.id.button_start_navigation:
-                startLat = location.getLatitude();
-                startLng = location.getLongitude();
+                //location momentan noch null
+                //startLat = location.getLatitude();
+                //startLng = location.getLongitude();
                 LatLng start = new LatLng(startLat, startLng);
                 Bundle args = new Bundle();
                 args.putParcelable("START", start);

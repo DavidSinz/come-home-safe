@@ -3,6 +3,7 @@ package com.example.moni.comehomesafe;
 
 import android.media.MediaRouter;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -43,7 +44,9 @@ public class DirectionDownloadTask extends AsyncTask<String, Integer, String>{
             URL url = new URL(params[0]);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             int responseCode = conn.getResponseCode();
+            Log.d("tag", "HTTP geöffnet");
             if (responseCode == HttpURLConnection.HTTP_OK) {
+                Log.d("tag2", "HTTP_OK");
                 InputStream is = conn.getInputStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 String line;
