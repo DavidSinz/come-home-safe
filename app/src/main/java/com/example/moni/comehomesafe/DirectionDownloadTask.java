@@ -62,6 +62,7 @@ public class DirectionDownloadTask extends AsyncTask<String, Integer, String>{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Log.d("JSON DATA: ", jsonString);
         return jsonString;
     }
 

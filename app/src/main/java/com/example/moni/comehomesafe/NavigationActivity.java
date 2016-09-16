@@ -33,7 +33,7 @@ public class NavigationActivity extends FragmentActivity
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private static final String ADDRESS = "https://maps.googleapis.com/maps/api/directions/json?";
-    private static final String GOOGLE_API_KEY = "AIzaSyCuvRBq6Ckbrx0qRednmupRMF3MXX0mgso";
+    private static final String GOOGLE_DIRECTIONS_KEY = "AIzaSyC9a7v6ZEyOdTCU48xfJpDsew-1TXcZn7Q";
     private static final long FASTEST_INTERVAL = 10000;
     private static final long UPDATE_INTERVAL = 5000;
 
@@ -81,8 +81,8 @@ public class NavigationActivity extends FragmentActivity
     private String createAddress(){
         //String urlOrigin = URLEncoder.encode(start, "utf-8");
         //überprüfen, ob start & destination als LatLng richtig ausgegeben werden
-        Log.d("ADDRESS: ", "origin=" + startLat + startLng + "&destination=" + destinationLat + destinationLng + "&key=" + GOOGLE_API_KEY);
-        return ADDRESS + "origin=" + startLat + startLng + "&destination=" + destinationLat + destinationLng + "&key=" + GOOGLE_API_KEY;
+        Log.d("ADDRESS: ", "origin=" + startLat + startLng + "&destination=" + destinationLat + destinationLng + "&key=" + GOOGLE_DIRECTIONS_KEY);
+        return ADDRESS + "origin=" + startLat + startLng + "&destination=" + destinationLat + destinationLng + "&key=" + GOOGLE_DIRECTIONS_KEY;
     }
 
     @Override
