@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,6 +42,8 @@ public class NavigationActivity extends FragmentActivity
     private double startLng;
     private LatLng start;
     private LatLng destination;
+    private double destinationLat;
+    private double destinationLng;
     private LatLng currentLocation;
     private String companion;
 
@@ -78,8 +81,8 @@ public class NavigationActivity extends FragmentActivity
     private String createAddress(){
         //String urlOrigin = URLEncoder.encode(start, "utf-8");
         //überprüfen, ob start & destination als LatLng richtig ausgegeben werden
-
-        return ADDRESS + "origin=" + start + "&destination=" + destination + "&key=" + GOOGLE_API_KEY;
+        Log.d("ADDRESS: ", "origin=" + startLat + startLng + "&destination=" + destinationLat + destinationLng + "&key=" + GOOGLE_API_KEY);
+        return ADDRESS + "origin=" + startLat + startLng + "&destination=" + destinationLat + destinationLng + "&key=" + GOOGLE_API_KEY;
     }
 
     @Override
@@ -87,7 +90,7 @@ public class NavigationActivity extends FragmentActivity
         mMap = googleMap;
         LatLng startPos = new LatLng(startLat, startLng);
         mMap.addMarker(new MarkerOptions().position(startPos).title("your position"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(startPos));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPos, 6));
     }
 
     @Override
@@ -111,15 +114,14 @@ public class NavigationActivity extends FragmentActivity
     }
 
     @Override
-    public void onStop() {
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
+    public void onStop() { //evtl. if.isConnected()
+        mGoogleApiClient.disconnect();
         super.onStop();
     }
 
     @Override
     public void onConnected(Bundle bundle) {
+        mGoogleApiClient.connect();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -143,10 +145,12 @@ public class NavigationActivity extends FragmentActivity
     }
 
     private void startLocationUpdates() {
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL)
-                .setFastestInterval(FASTEST_INTERVAL);
+        if(mLocationRequest == null) {
+            mLocationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setInterval(UPDATE_INTERVAL)
+                    .setFastestInterval(FASTEST_INTERVAL);
+        }
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -185,16 +189,17 @@ public class NavigationActivity extends FragmentActivity
     }
 
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        //--> Fehlermeldung: GoogleApiClient is not connected yet
+        //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 
-   /* @Override
+    @Override
     public void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected() && !mLocationRequest) {
+        if (mGoogleApiClient.isConnected() /*&& !mLocationRequest*/) {
             startLocationUpdates();
         }
-    }*/
+    }
 
 
 }
