@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 public class SelectPlaces extends Activity{
 
-    private static final int RESULT_PICK_CONTACT = 85500;
+    private static final int RESULT_PICK_PLACE = 85500;
     private TextView textViewName, textViewPlace;
 
     @Override
@@ -32,14 +32,14 @@ public class SelectPlaces extends Activity{
     public void pickPlace(View v) {
         Intent placePickerIntent = new Intent(Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-        startActivityForResult(placePickerIntent, RESULT_PICK_CONTACT);
+        startActivityForResult(placePickerIntent, RESULT_PICK_PLACE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case RESULT_PICK_CONTACT:
+                case RESULT_PICK_PLACE:
                     placePicked(data);
                     break;
             }

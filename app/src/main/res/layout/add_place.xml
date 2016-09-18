@@ -6,6 +6,13 @@
     android:padding="20dp"
     android:weightSum="1">
 
+    <Button
+        android:id="@+id/pick_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="pickContact"
+        android:text="@string/importiere_kontakt_vom_telefon" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/name"
+            android:text="Name"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/darker_gray" />
         <EditText
@@ -36,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/destination"
+            android:text="Adresse"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/darker_gray" />
         <EditText
@@ -55,6 +62,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="pickPlace"
-        android:text="@string/zu_orten_hunzuf_gen" />
+        android:text="Zu Orte Hunzugügen" />
 
 </LinearLayout>
