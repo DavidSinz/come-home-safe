@@ -13,6 +13,10 @@
     <string name="importiere_kontakt_vom_telefon">Importiere Kontakt vom Telefon</string>
     <string name="name">Name</string>
     <string name="phone_number">Phone Number</string>
+    <string name="destination">Ort</string>
     <string name="zu_kontakten_hinzuf_gen">Zu Kontakten hinzufügen</string>
+    <string name="zu_orten_hunzuf_gen">Zu Orten hunzufügen</string>
+
+    <string name="name_place">Name</string>
 
 </resources>

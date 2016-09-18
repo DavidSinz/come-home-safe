@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".PlacesActivity">
 
-    <ListView
-        android:id="@+id/places"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_place"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/ic_input_add" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </ListView>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</RelativeLayout>
+        <ListView
+            android:id="@+id/places_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:padding="10dp" />
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
