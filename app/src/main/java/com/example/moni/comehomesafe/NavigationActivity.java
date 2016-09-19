@@ -46,11 +46,13 @@ public class NavigationActivity extends FragmentActivity
     private double destinationLng;
     private LatLng currentLocation;
     private String companion;
+    private String travelmode;
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLocation;
     private LocationManager locationManager;
     private LocationRequest mLocationRequest;
+
 
 
 
@@ -75,6 +77,7 @@ public class NavigationActivity extends FragmentActivity
             start = bundle.getParcelable("START");
             destination = bundle.getParcelable("DESTINATION");
             companion = bundle.getString("COMPANION");
+            travelmode = bundle.getString("MODE");
         }
     }
 
@@ -82,7 +85,7 @@ public class NavigationActivity extends FragmentActivity
         //String urlOrigin = URLEncoder.encode(start, "utf-8");
         //überprüfen, ob start & destination als LatLng richtig ausgegeben werden
         Log.d("ADDRESS: ", "origin=" + startLat + startLng + "&destination=" + destinationLat + destinationLng + "&key=" + GOOGLE_DIRECTIONS_KEY);
-        return ADDRESS + "origin=" + startLat + startLng + "&destination=" + destinationLat + destinationLng + "&key=" + GOOGLE_DIRECTIONS_KEY;
+        return ADDRESS + "origin=" + startLat + startLng + "&destination=" + destinationLat + destinationLng + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY;
     }
 
     @Override
