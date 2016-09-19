@@ -65,25 +65,22 @@ public class ContactsActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String result = null;
         if (requestCode == RESULT_SELECT_CONTACT && resultCode == RESULT_OK && data != null) {
-            result = data.getStringExtra(KEY_RESULT);
-        }
-
-        String name = "";
-        String number = "";
-        boolean b = false;
-        for (int i = 0; i < result.length(); i++) {
-            if (b) {
-                number += result.charAt(i);
-            } else if (result.charAt(i) == '/') {
-                b = true;
-            } else {
-                name += result.charAt(i);
+            String result = data.getStringExtra(KEY_RESULT);
+            String name = "";
+            String number = "";
+            boolean b = false;
+            for (int i = 0; i < result.length(); i++) {
+                if (b) {
+                    number += result.charAt(i);
+                } else if (result.charAt(i) == '/') {
+                    b = true;
+                } else {
+                    name += result.charAt(i);
+                }
             }
+            addNewContact(name, number);
         }
-
-        addNewContact(name, number);
     }
 
     private void initListView() {

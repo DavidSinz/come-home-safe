@@ -84,7 +84,7 @@ public class PlacesActivity extends AppCompatActivity {
             }
         }
 
-        addNewPlace(name, number);
+//        addNewPlace(name, number);
     }
 
     private void initListView() {
@@ -110,11 +110,11 @@ public class PlacesActivity extends AppCompatActivity {
         places_adapter.notifyDataSetChanged();
     }
 
-    public void addNewPlace(String name, String place) {
-        PlacesItem newPlace = new PlacesItem(name, place);
-        db_places.insertPlacesItem(newPlace);
-        updateList();
-    }
+//    public void addNewPlace(String name, String place) {
+//        PlacesItem newPlace = new PlacesItem(name, place);
+//        db_places.insertPlaceItem(newPlace);
+//        updateList();
+//    }
 
     private void removePlaceAtPos(int position) {
         if (placesItems.get(position) != null) {
