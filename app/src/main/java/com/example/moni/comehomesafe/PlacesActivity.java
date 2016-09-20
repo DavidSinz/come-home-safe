@@ -20,16 +20,16 @@ public class PlacesActivity extends AppCompatActivity {
     private PlacesListDatabase db_places;
 
     public static final String KEY_RESULT = "place";
-    private static final int RESULT_SELECT_PLACE = 000002;
+    private static final int RESULT_SELECT_PLACE = 000003;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contacts);
+        setContentView(R.layout.activity_places);
 
         initDB();
         initUI();
-        initContactList();
+        initPlacesList();
     }
 
     @Override
@@ -43,22 +43,22 @@ public class PlacesActivity extends AppCompatActivity {
         db_places.open();
     }
 
-    private void initContactList() {
+    private void initPlacesList() {
         updateList();
     }
 
     private void initUI() {
-        initAddContactButton();
+        initAddPlacesButton();
         initListView();
         initListAdapter();
     }
 
-    private void initAddContactButton() {
-        FloatingActionButton addPlaceButton = (FloatingActionButton) findViewById(R.id.add_contact);
+    private void initAddPlacesButton() {
+        FloatingActionButton addPlaceButton = (FloatingActionButton) findViewById(R.id.create_place_button);
         addPlaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PlacesActivity.this, SelectPlaces.class);
+                Intent intent = new Intent(PlacesActivity.this, CreateNewPlaceActivity.class);
                 PlacesActivity.this.startActivityForResult(intent, RESULT_SELECT_PLACE);
             }
         });
@@ -69,26 +69,37 @@ public class PlacesActivity extends AppCompatActivity {
         String result = null;
         if (requestCode == RESULT_SELECT_PLACE && resultCode == RESULT_OK && data != null) {
             result = data.getStringExtra(KEY_RESULT);
-        }
 
-        String name = "";
-        String number = "";
-        boolean b = false;
-        for (int i = 0; i < result.length(); i++) {
-            if (b) {
-                number += result.charAt(i);
-            } else if (result.charAt(i) == '/') {
-                b = true;
-            } else {
-                name += result.charAt(i);
+            String place = "";
+            String street = "";
+            String number = "";
+            String zipCode = "";
+            String city = "";
+
+            int counter = 0;
+
+            for (int i = 0; i < result.length(); i++) {
+                if (result.charAt(i) == '/') {
+                    counter++;
+                } else if (counter == 0) {
+                    place += result.charAt(i);
+                } else if (counter == 1) {
+                    street += result.charAt(i);
+                } else if (counter == 2) {
+                    number += result.charAt(i);
+                } else if (counter == 3) {
+                    zipCode += result.charAt(i);
+                } else {
+                    city += result.charAt(i);
+                }
             }
-        }
 
-//        addNewPlace(name, number);
+            addNewPlace(place, street, number, zipCode, city);
+        }
     }
 
     private void initListView() {
-        ListView list = (ListView) findViewById(R.id.contact_list);
+        ListView list = (ListView) findViewById(R.id.places_list);
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -99,7 +110,7 @@ public class PlacesActivity extends AppCompatActivity {
     }
 
     private void initListAdapter() {
-        ListView list = (ListView) findViewById(R.id.contact_list);
+        ListView list = (ListView) findViewById(R.id.places_list);
         places_adapter = new PlacesListAdapter(this, placesItems);
         list.setAdapter(places_adapter);
     }
@@ -110,11 +121,11 @@ public class PlacesActivity extends AppCompatActivity {
         places_adapter.notifyDataSetChanged();
     }
 
-//    public void addNewPlace(String name, String place) {
-//        PlacesItem newPlace = new PlacesItem(name, place);
-//        db_places.insertPlaceItem(newPlace);
-//        updateList();
-//    }
+    public void addNewPlace(String place, String street, String number, String zipCode, String city) {
+        PlacesItem newPlace = new PlacesItem(place, street, number, zipCode, city);
+        db_places.insertPlaceItem(newPlace);
+        updateList();
+    }
 
     private void removePlaceAtPos(int position) {
         if (placesItems.get(position) != null) {
@@ -144,7 +155,6 @@ public class PlacesActivity extends AppCompatActivity {
     private void sortList() {
         places_adapter.notifyDataSetChanged();
     }
-
 
 
 }

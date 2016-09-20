@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class PlacesListDatabase {
     private static final String DATABASE_NAME = "placeslist.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_TABLE = "placeslistitems";
 
@@ -62,7 +62,7 @@ public class PlacesListDatabase {
     }
 
     public void removePlacesItem(PlacesItem item) {
-        String whereClause = KEY_PLACE + " = '" + item.getPlace() + "' "
+        String whereClause = KEY_PLACE + " = '" + item.getPlace() + "' AND "
                 + KEY_STREET + " = '" + item.getStreet() + "' AND "
                 + KEY_NUMBER + " = '" + item.getNumber() + "'";
 
@@ -107,7 +107,9 @@ public class PlacesListDatabase {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+            switch (oldVersion) {
+                case 1: db.execSQL("ALTER TABLE " + DATABASE_TABLE + " ADD COLUMN INVENTORY TEXT");
+            }
         }
     }
 }
