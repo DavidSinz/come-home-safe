@@ -1,9 +1,12 @@
 package com.example.moni.comehomesafe;
 
 
-//in kombi mit adapter
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.List;
+
 public interface DownloadListener {
 
-    public void onDownloadFinished();
+    public void onDownloadFinished(List<LatLng> polyline);
 
 }

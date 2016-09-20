@@ -69,16 +69,11 @@ public class MapsActivityAlt extends FragmentActivity
         createGoogleApiClient();
 
         initButtons();
-
-        //alt: locationmanager von android
-        /** locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-         //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, this, 0, 0);
-         */
     }
 
 
     private void initButtons() {
-        ImageButton btnMode = (ImageButton) findViewById(R.id.button_mode);
+        ImageButton btnMode = (ImageButton) findViewById(R.id.button_travelmode);
         btnMode.setOnClickListener(this);
         ImageButton btnDestination = (ImageButton) findViewById(R.id.button_destination);
         btnDestination.setOnClickListener(this);

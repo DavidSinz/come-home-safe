@@ -5,6 +5,7 @@ import android.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -25,8 +26,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.net.URLEncoder;
+import java.util.List;
 
 public class NavigationActivity extends FragmentActivity
         implements OnMapReadyCallback, DownloadListener,
@@ -36,6 +40,7 @@ public class NavigationActivity extends FragmentActivity
     private static final String GOOGLE_DIRECTIONS_KEY = "AIzaSyC9a7v6ZEyOdTCU48xfJpDsew-1TXcZn7Q";
     private static final long FASTEST_INTERVAL = 10000;
     private static final long UPDATE_INTERVAL = 5000;
+    private static final int WIDTH_POLYLINE = 8;
 
     private GoogleMap mMap;
     private double startLat;
@@ -85,7 +90,7 @@ public class NavigationActivity extends FragmentActivity
         //String urlOrigin = URLEncoder.encode(start, "utf-8");
         //überprüfen, ob start & destination als LatLng richtig ausgegeben werden
         Log.d("ADDRESS: ", "origin=" + startLat + startLng + "&destination=" + destinationLat + destinationLng + "&key=" + GOOGLE_DIRECTIONS_KEY);
-        return ADDRESS + "origin=" + startLat + startLng + "&destination=" + destinationLat + destinationLng + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY;
+        return ADDRESS + "origin=" + startLat + "," + startLng + "&destination=" + destinationLat + "," + destinationLng + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY;
     }
 
     @Override
@@ -93,12 +98,18 @@ public class NavigationActivity extends FragmentActivity
         mMap = googleMap;
         LatLng startPos = new LatLng(startLat, startLng);
         mMap.addMarker(new MarkerOptions().position(startPos).title("your position"));
+        //null
+        //mMap.addMarker(new MarkerOptions().position(destination).title("your destination"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPos, 6));
     }
 
     @Override
-    public void onDownloadFinished() {
-
+    public void onDownloadFinished(List<LatLng> polyline) {
+        PolylineOptions route = new PolylineOptions();
+        route.addAll(polyline);
+        Polyline polylineRoute = mMap.addPolyline(route);
+        polylineRoute.setColor(Color.BLUE);
+        polylineRoute.setWidth(WIDTH_POLYLINE);
     }
 
     private void createGoogleApiClient() {

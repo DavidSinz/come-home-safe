@@ -26,10 +26,9 @@ public class DirectionDownloadTask extends AsyncTask<String, Integer, String>{
     private DownloadListener listener;
     private LatLng start;
     private LatLng destination;
+    private List<LatLng> polyline;
 
 
-    //map oder so, wo die Ergebnisse eingetragen werden
-    //in kombi mit adapter
     public DirectionDownloadTask(DownloadListener listener, LatLng start, LatLng destination) {
         this.listener = listener;
         this.start = start;
@@ -71,30 +70,27 @@ public class DirectionDownloadTask extends AsyncTask<String, Integer, String>{
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         processJson(result);
-        listener.onDownloadFinished();
+        listener.onDownloadFinished(polyline);
     }
 
     //routenalternativen: alternatives = true
-    //als Variablen zur URL hinzufügen
     private void processJson(String data) {
         try {
-            //alt JSONArray jsonArray = new JSONArray(text);
-
             JSONObject jsonData = new JSONObject(data);
             JSONArray jsonRoutes = jsonData.getJSONArray("routes");
             for (int i = 0; i < jsonRoutes.length(); i++) {
                 JSONObject jsonRoute = jsonRoutes.getJSONObject(i);
                 JSONObject overviewPolylineJSON = jsonRoute.getJSONObject("overview_polyline");
-
+                polyline = decodePolyline(overviewPolylineJSON.getString("points"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-
+    //TODO Quelle angeben
     //decode polyline points
-    private List<LatLng> decodePoly(String encoded) {
+    private List<LatLng> decodePolyline(String encoded) {
 
         List<LatLng> poly = new ArrayList<>();
         int index = 0, len = encoded.length();
@@ -124,10 +120,8 @@ public class DirectionDownloadTask extends AsyncTask<String, Integer, String>{
                     (((double) lng / 1E5)));
             poly.add(p);
         }
-
         return poly;
     }
-
 
 
 }
