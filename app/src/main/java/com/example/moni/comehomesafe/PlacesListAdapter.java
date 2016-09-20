@@ -35,17 +35,17 @@ public class PlacesListAdapter extends ArrayAdapter<PlacesItem> {
         PlacesItem placesItem = listItem.get(pos);
 
         if (placesItem != null) {
-        //    TextView place = (TextView) v.findViewById(R.id.places_place);
-        //    TextView street = (TextView) v.findViewById(R.id.places_street);
-        //    TextView number = (TextView) v.findViewById(R.id.places_number);
-        //    TextView zipCode = (TextView) v.findViewById(R.id.places_zip_code);
-        //    TextView city = (TextView) v.findViewById(R.id.places_city);
+            TextView place = (TextView) v.findViewById(R.id.places_place);
+            TextView street = (TextView) v.findViewById(R.id.places_street);
+            TextView number = (TextView) v.findViewById(R.id.places_number);
+            TextView zipCode = (TextView) v.findViewById(R.id.places_zip_code);
+            TextView city = (TextView) v.findViewById(R.id.places_city);
 
-        //    place.setText(placesItem.getPlace());
-        //    street.setText(placesItem.getStreet());
-        //    number.setText(placesItem.getNumber());
-        //    zipCode.setText(placesItem.getZipCode());
-        //    city.setText(placesItem.getCity());
+            place.setText(placesItem.getPlace());
+            street.setText(placesItem.getStreet());
+            number.setText(placesItem.getNumber());
+            zipCode.setText(placesItem.getZipCode());
+            city.setText(placesItem.getCity());
         }
 
         return v;

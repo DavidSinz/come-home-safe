@@ -6,62 +6,42 @@
     android:padding="20dp"
     android:weightSum="1">
 
-    <Button
-        android:id="@+id/pick_contact"
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="pickContact"
-        android:text="@string/importiere_kontakt_vom_telefon" />
+        android:id="@+id/edit_place"
+        android:hint="Ort"/>
 
-    <LinearLayout
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Name"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/darker_gray" />
-        <EditText
-            android:id="@+id/textName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-    </LinearLayout>
+        android:id="@+id/edit_street"
+        android:hint="Straße"/>
 
-    <LinearLayout
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Adresse"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/darker_gray" />
-        <EditText
-            android:id="@+id/textPlace"
-            android:inputType="number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-    </LinearLayout>
+        android:id="@+id/edit_number"
+        android:inputType="number"
+        android:hint="Hausnummer"/>
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_zip_code"
+        android:inputType="number"
+        android:hint="Postleitzahl"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_city"
+        android:hint="Stadt"/>
 
     <Button
         android:id="@+id/addplace_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="pickPlace"
         android:text="Zu Orte Hunzugügen" />
 
 </LinearLayout>
