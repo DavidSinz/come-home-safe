@@ -110,6 +110,19 @@ public class NavigationActivity extends FragmentActivity
         Polyline polylineRoute = mMap.addPolyline(route);
         polylineRoute.setColor(Color.BLUE);
         polylineRoute.setWidth(WIDTH_POLYLINE);
+        checkForDiscrepancy(polyline);
+    }
+
+    private void checkForDiscrepancy(List<LatLng> polyline) {
+        int count = 0;
+        while(polyline.contains(currentLocation)){
+            count = 0;
+        } if(!polyline.contains(currentLocation)){
+            count++;
+            if(count == 10){
+                //TODO Benachrichtigung versenden etc.
+            }
+        }
     }
 
     private void createGoogleApiClient() {
