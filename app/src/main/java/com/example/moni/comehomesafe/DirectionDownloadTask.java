@@ -1,7 +1,5 @@
 package com.example.moni.comehomesafe;
 
-
-import android.media.MediaRouter;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -28,13 +26,11 @@ public class DirectionDownloadTask extends AsyncTask<String, Integer, String>{
     private LatLng destination;
     private List<LatLng> polyline;
 
-
     public DirectionDownloadTask(DownloadListener listener, LatLng start, LatLng destination) {
         this.listener = listener;
         this.start = start;
         this.destination = destination;
     }
-
 
     @Override
     protected String doInBackground(String... params) {
@@ -88,7 +84,7 @@ public class DirectionDownloadTask extends AsyncTask<String, Integer, String>{
         }
     }
 
-    //TODO Quelle angeben
+    //Quelle: http://jeffreysambells.com/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java
     //decode polyline points
     private List<LatLng> decodePolyline(String encoded) {
 

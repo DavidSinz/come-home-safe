@@ -41,9 +41,12 @@ public class MapsActivityAlt extends FragmentActivity
 
     private static final int REQUESTCODE_DESTINATION = 1;
     private static final int REQUESTCODE_COMPANION = 2;
-    private GoogleMap mMap;
     private static final int LAT_GERMANY = 51;
     private static final int LNG_GERMANY = 10;
+    private static final int CAMERA_ZOOM_GERMANY = 6;
+    private static final int WHICH_MODE_DIALOG = 1;
+
+    private GoogleMap mMap;
     private Location location;
     private LatLng destination;
     private String companion;
@@ -55,7 +58,6 @@ public class MapsActivityAlt extends FragmentActivity
     private Location mLocation;
     private LocationManager locationManager;
     private LocationRequest mLocationRequest;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +72,6 @@ public class MapsActivityAlt extends FragmentActivity
 
         initButtons();
     }
-
 
     private void initButtons() {
         ImageButton btnMode = (ImageButton) findViewById(R.id.button_travelmode);
@@ -88,11 +89,8 @@ public class MapsActivityAlt extends FragmentActivity
         btnStartNavigation.setOnClickListener(this);
     }
 
-
     @Override
     public void onClick(View v) {
-        double startLat = 0;
-        double startLng = 0;
         switch (v.getId()) {
             case R.id.button_travelmode:
                 buildDialog();
@@ -106,31 +104,30 @@ public class MapsActivityAlt extends FragmentActivity
                 startActivityForResult(intentAddComp, REQUESTCODE_COMPANION);
 
             case R.id.button_start_navigation:
-                //null
-                //startLat = currentLocation.latitude;
-                //startLng = currentLocation.longitude;
-                LatLng start = new LatLng(startLat, startLng);
-                Bundle args = new Bundle();
-                args.putParcelable("START", start);
-                args.putParcelable("DESTINATION", destination);
-                args.putString("COMPANION", companion);
-                args.putString("MODE", travelmode);
-                Intent intentStartNav = new Intent(this, NavigationActivity.class);
-                intentStartNav.putExtra("BUNDLE", args);
-                startActivity(intentStartNav);
+                buildIntent();
         }
+    }
 
+    private void buildIntent() {
+        //null
+        Bundle args = new Bundle();
+        args.putParcelable("START", currentLocation);
+        args.putParcelable("DESTINATION", destination);
+        args.putString("COMPANION", companion);
+        args.putString("MODE", travelmode);
+        Intent intentStartNav = new Intent(this, NavigationActivity.class);
+        intentStartNav.putExtra("BUNDLE", args);
+        startActivity(intentStartNav);
     }
 
     private void buildDialog() {
-
         String[] modeArray = new String[]{"zu Fuß", "mit dem Auto"};
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivityAlt.this);
                 builder.setTitle("Fortbewegungsmittel")
                 .setItems(modeArray, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(which == 1){
+                        if(which == WHICH_MODE_DIALOG){
                             travelmode = "walking";
                         } else {
                             travelmode = "driving";
@@ -140,7 +137,6 @@ public class MapsActivityAlt extends FragmentActivity
                 .create()
                 .show();
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -173,7 +169,7 @@ public class MapsActivityAlt extends FragmentActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         LatLng germany = new LatLng(LAT_GERMANY, LNG_GERMANY);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(germany, 6));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(germany, CAMERA_ZOOM_GERMANY));
         setUpMyLocation();
     }
 
@@ -204,7 +200,6 @@ public class MapsActivityAlt extends FragmentActivity
             double longitude = mLocation.getLongitude();
             currentLocation = new LatLng(latitude, longitude);
         }
-
     }
 
     @Override
