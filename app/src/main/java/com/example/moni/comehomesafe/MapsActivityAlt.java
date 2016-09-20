@@ -1,16 +1,30 @@
 package com.example.moni.comehomesafe;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
@@ -18,9 +32,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.lang.reflect.Array;
+
 
 public class MapsActivityAlt extends FragmentActivity
-        implements OnMapReadyCallback, View.OnClickListener {
+        implements OnMapReadyCallback, View.OnClickListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final int REQUESTCODE_DESTINATION = 1;
     private static final int REQUESTCODE_COMPANION = 2;
@@ -30,6 +47,14 @@ public class MapsActivityAlt extends FragmentActivity
     private Location location;
     private LatLng destination;
     private String companion;
+    private LatLng currentLocation;
+    private Context context;
+    private String travelmode;
+
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLocation;
+    private LocationManager locationManager;
+    private LocationRequest mLocationRequest;
 
 
     @Override
@@ -41,62 +66,36 @@ public class MapsActivityAlt extends FragmentActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        createGoogleApiClient();
+
         initButtons();
-
-        //alt: locationmanager von android
-        /** locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-         //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, this, 0, 0);
-         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-         // TODO: Consider calling
-         //    ActivityCompat#requestPermissions
-         // here to request the missing permissions, and then overriding
-         //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-         //                                          int[] grantResults)
-         // to handle the case where the user grants the permission. See the documentation
-         // for ActivityCompat#requestPermissions for more details.
-         return;
-         }
-         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-         //oder ganze activity als "implements LocationListener" und dann hier nur "this"
-         */
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-
     }
 
 
     private void initButtons() {
-        ImageButton btnCurrentLocation = (ImageButton) findViewById(R.id.button_gps_location);
-        btnCurrentLocation.setOnClickListener(this);
+        ImageButton btnMode = (ImageButton) findViewById(R.id.button_travelmode);
+        btnMode.setOnClickListener(this);
         ImageButton btnDestination = (ImageButton) findViewById(R.id.button_destination);
         btnDestination.setOnClickListener(this);
         ImageButton btnAddCompanion = (ImageButton) findViewById(R.id.button_add_companion);
         btnAddCompanion.setOnClickListener(this);
         Button btnStartNavigation = (Button) findViewById(R.id.button_start_navigation);
+        if (companion != null && currentLocation != null && destination != null && travelmode != null) {
+            btnStartNavigation.setEnabled(true);
+        } else {
+            btnStartNavigation.setEnabled(false);
+        }
         btnStartNavigation.setOnClickListener(this);
     }
+
 
     @Override
     public void onClick(View v) {
         double startLat = 0;
         double startLng = 0;
         switch (v.getId()) {
-            case R.id.button_gps_location:
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                mMap.setMyLocationEnabled(true);
-                //zum orten
-                //startLat & startLng initalisieren
-
+            case R.id.button_travelmode:
+                buildDialog();
 
             case R.id.button_destination:
                 Intent intentDestination = new Intent(this, SelectDestinationActivity.class);
@@ -107,19 +106,39 @@ public class MapsActivityAlt extends FragmentActivity
                 startActivityForResult(intentAddComp, REQUESTCODE_COMPANION);
 
             case R.id.button_start_navigation:
-                //location momentan noch null
-                //startLat = location.getLatitude();
-                //startLng = location.getLongitude();
+                //null
+                //startLat = currentLocation.latitude;
+                //startLng = currentLocation.longitude;
                 LatLng start = new LatLng(startLat, startLng);
                 Bundle args = new Bundle();
                 args.putParcelable("START", start);
                 args.putParcelable("DESTINATION", destination);
                 args.putString("COMPANION", companion);
+                args.putString("MODE", travelmode);
                 Intent intentStartNav = new Intent(this, NavigationActivity.class);
                 intentStartNav.putExtra("BUNDLE", args);
                 startActivity(intentStartNav);
         }
 
+    }
+
+    private void buildDialog() {
+
+        String[] modeArray = new String[]{"zu Fuß", "mit dem Auto"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivityAlt.this);
+                builder.setTitle("Fortbewegungsmittel")
+                .setItems(modeArray, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which == 1){
+                            travelmode = "walking";
+                        } else {
+                            travelmode = "driving";
+                        }
+                    }
+                })
+                .create()
+                .show();
     }
 
 
@@ -137,7 +156,6 @@ public class MapsActivityAlt extends FragmentActivity
                     companion = data.getExtras().getString("RESULT");
                     //Datentyp für companion?
                 }
-
             }
         }
     }
@@ -156,6 +174,51 @@ public class MapsActivityAlt extends FragmentActivity
         mMap = googleMap;
         LatLng germany = new LatLng(LAT_GERMANY, LNG_GERMANY);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(germany, 6));
+        setUpMyLocation();
     }
 
+    private void setUpMyLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context, "Please turn on your GPS", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (mMap != null) {
+            mMap.setMyLocationEnabled(true);
+        }
+    }
+
+    private void createGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        mGoogleApiClient.connect();
+        if (mLocation != null) {
+            double latitude = mLocation.getLatitude();
+            double longitude = mLocation.getLongitude();
+            currentLocation = new LatLng(latitude, longitude);
+        }
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }
