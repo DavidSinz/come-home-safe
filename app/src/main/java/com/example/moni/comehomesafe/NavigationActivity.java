@@ -1,9 +1,7 @@
 package com.example.moni.comehomesafe;
 
 
-import android.*;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -16,7 +14,6 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.internal.StringListResponse;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -28,8 +25,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-
-import java.net.URLEncoder;
 import java.util.List;
 
 public class NavigationActivity extends FragmentActivity
@@ -41,6 +36,8 @@ public class NavigationActivity extends FragmentActivity
     private static final long FASTEST_INTERVAL = 10000;
     private static final long UPDATE_INTERVAL = 5000;
     private static final int WIDTH_POLYLINE = 8;
+    private static final int CAMERA_ZOOM_LOCATION = 10;
+    private static final int MAX_TIME_FOR_DISCREPANCY = 10;
 
     private GoogleMap mMap;
     private double startLat;
@@ -58,9 +55,6 @@ public class NavigationActivity extends FragmentActivity
     private LocationManager locationManager;
     private LocationRequest mLocationRequest;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,9 +68,12 @@ public class NavigationActivity extends FragmentActivity
 
         createAddress();
 
-        //hinter this --> Übergabewerte; oder als try new.. und catch exception
         new DirectionDownloadTask(this, start, destination).execute(createAddress());
 
+        getIntentExtras();
+    }
+
+    private void getIntentExtras() {
         Bundle bundle = getIntent().getParcelableExtra("BUNDLE");
         if(bundle!=null) {
             start = bundle.getParcelable("START");
@@ -87,8 +84,6 @@ public class NavigationActivity extends FragmentActivity
     }
 
     private String createAddress(){
-        //String urlOrigin = URLEncoder.encode(start, "utf-8");
-        //überprüfen, ob start & destination als LatLng richtig ausgegeben werden
         Log.d("ADDRESS: ", "origin=" + startLat + startLng + "&destination=" + destinationLat + destinationLng + "&key=" + GOOGLE_DIRECTIONS_KEY);
         return ADDRESS + "origin=" + startLat + "," + startLng + "&destination=" + destinationLat + "," + destinationLng + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY;
     }
@@ -100,7 +95,7 @@ public class NavigationActivity extends FragmentActivity
         mMap.addMarker(new MarkerOptions().position(startPos).title("your position"));
         //null
         //mMap.addMarker(new MarkerOptions().position(destination).title("your destination"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPos, 6));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPos, CAMERA_ZOOM_LOCATION));
     }
 
     @Override
@@ -110,6 +105,7 @@ public class NavigationActivity extends FragmentActivity
         Polyline polylineRoute = mMap.addPolyline(route);
         polylineRoute.setColor(Color.BLUE);
         polylineRoute.setWidth(WIDTH_POLYLINE);
+        //oder in requestLocationUpdates? wobei da die polyline Null ist
         checkForDiscrepancy(polyline);
     }
 
@@ -119,7 +115,7 @@ public class NavigationActivity extends FragmentActivity
             count = 0;
         } if(!polyline.contains(currentLocation)){
             count++;
-            if(count == 10){
+            if(count == MAX_TIME_FOR_DISCREPANCY){ //Beispielwert, muss getestet werden
                 //TODO Benachrichtigung versenden etc.
             }
         }
@@ -200,7 +196,7 @@ public class NavigationActivity extends FragmentActivity
     public void onLocationChanged(Location location) {
         //update UI
         mMap.addMarker(new MarkerOptions().position(currentLocation).title("your position"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 10));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, CAMERA_ZOOM_LOCATION));
 
     }
 
