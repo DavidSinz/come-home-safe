@@ -8,43 +8,20 @@
 
     <TextView
         android:id="@+id/places_place"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent" />
+
+    <TextView
+        android:id="@+id/places_street_number"
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/places_street"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.5" />
-
-        <TextView
-            android:id="@+id/places_number"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.5" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/places_zip_code"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.5" />
-
-        <TextView
-            android:id="@+id/places_city"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.5" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/places_zipcode_city"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"/>
 
 </LinearLayout>

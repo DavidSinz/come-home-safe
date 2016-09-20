@@ -69,32 +69,7 @@ public class PlacesActivity extends AppCompatActivity {
         String result = null;
         if (requestCode == RESULT_SELECT_PLACE && resultCode == RESULT_OK && data != null) {
             result = data.getStringExtra(KEY_RESULT);
-
-            String place = "";
-            String street = "";
-            String number = "";
-            String zipCode = "";
-            String city = "";
-
-            int counter = 0;
-
-            for (int i = 0; i < result.length(); i++) {
-                if (result.charAt(i) == '/') {
-                    counter++;
-                } else if (counter == 0) {
-                    place += result.charAt(i);
-                } else if (counter == 1) {
-                    street += result.charAt(i);
-                } else if (counter == 2) {
-                    number += result.charAt(i);
-                } else if (counter == 3) {
-                    zipCode += result.charAt(i);
-                } else {
-                    city += result.charAt(i);
-                }
-            }
-
-            addNewPlace(place, street, number, zipCode, city);
+            addNewPlace(result);
         }
     }
 
@@ -121,9 +96,9 @@ public class PlacesActivity extends AppCompatActivity {
         places_adapter.notifyDataSetChanged();
     }
 
-    public void addNewPlace(String place, String street, String number, String zipCode, String city) {
-        PlacesItem newPlace = new PlacesItem(place, street, number, zipCode, city);
-        db_places.insertPlaceItem(newPlace);
+    public void addNewPlace(String adress) {
+        PlacesItem newPlace = new PlacesItem(adress);
+        db_places.insertPlacesItem(newPlace);
         updateList();
     }
 

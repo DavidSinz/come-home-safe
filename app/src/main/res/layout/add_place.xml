@@ -3,45 +3,51 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="20dp"
+    android:padding="30dp"
     android:weightSum="1">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/edit_place"
-        android:hint="Ort"/>
+    <Spinner
+        android:id="@+id/place_spinner"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="10dp"
         android:id="@+id/edit_street"
-        android:hint="Straße"/>
+        android:hint="@string/strasse"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="10dp"
         android:id="@+id/edit_number"
         android:inputType="number"
-        android:hint="Hausnummer"/>
+        android:hint="@string/hausnummer"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="10dp"
         android:id="@+id/edit_zip_code"
         android:inputType="number"
-        android:hint="Postleitzahl"/>
+        android:hint="@string/postleitzahl"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="10dp"
         android:id="@+id/edit_city"
-        android:hint="Stadt"/>
+        android:hint="@string/stadt"/>
 
     <Button
         android:id="@+id/addplace_button"
+        android:paddingTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Zu Orte Hunzugügen" />
+        android:text="@string/zu_orte_hunzug_gen" />
 
 </LinearLayout>

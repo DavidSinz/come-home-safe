@@ -33,19 +33,41 @@ public class PlacesListAdapter extends ArrayAdapter<PlacesItem> {
         }
 
         PlacesItem placesItem = listItem.get(pos);
+        String result = placesItem.getAdress();
 
         if (placesItem != null) {
-            TextView place = (TextView) v.findViewById(R.id.places_place);
-            TextView street = (TextView) v.findViewById(R.id.places_street);
-            TextView number = (TextView) v.findViewById(R.id.places_number);
-            TextView zipCode = (TextView) v.findViewById(R.id.places_zip_code);
-            TextView city = (TextView) v.findViewById(R.id.places_city);
 
-            place.setText(placesItem.getPlace());
-            street.setText(placesItem.getStreet());
-            number.setText(placesItem.getNumber());
-            zipCode.setText(placesItem.getZipCode());
-            city.setText(placesItem.getCity());
+            String place = "";
+            String street = "";
+            String number = "";
+            String zipCode = "";
+            String city = "";
+
+            int counter = 0;
+
+            for (int i = 0; i < result.length(); i++) {
+                if (result.charAt(i) == '/') {
+                    counter++;
+                } else if (counter == 0) {
+                    place += result.charAt(i);
+                } else if (counter == 1) {
+                    street += result.charAt(i);
+                } else if (counter == 2) {
+                    number += result.charAt(i);
+                } else if (counter == 3) {
+                    zipCode += result.charAt(i);
+                } else {
+                    city += result.charAt(i);
+                }
+            }
+
+            TextView placeTextV = (TextView) v.findViewById(R.id.places_place);
+            TextView streetAndNumberTextV = (TextView) v.findViewById(R.id.places_street_number);
+            TextView zipCodeAndCityTextV = (TextView) v.findViewById(R.id.places_zipcode_city);
+
+            placeTextV.setText(place);
+            streetAndNumberTextV.setText(street + " " + number);
+            zipCodeAndCityTextV.setText(zipCode + " " + city);
         }
 
         return v;

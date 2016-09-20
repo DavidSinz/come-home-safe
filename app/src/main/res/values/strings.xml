@@ -18,5 +18,21 @@
     <string name="zu_orten_hunzuf_gen">Zu Orten hunzufügen</string>
 
     <string name="name_place">Name</string>
+    <string name="strasse">Straße</string>
+    <string name="hausnummer">Hausnummer</string>
+    <string name="postleitzahl">Postleitzahl</string>
+    <string name="stadt">Stadt</string>
+    <string name="zu_orte_hunzug_gen">Zu Orte Hunzugügen</string>
+
+    <string-array name="place_list">
+        <item>Zuhause</item>
+        <item>Arbeit</item>
+        <item>Schule</item>
+        <item>Universität</item>
+        <item>Bar</item>
+        <item>Club</item>
+        <item>Kino</item>
+        <item>Sonstiges</item>
+    </string-array>
 
 </resources>

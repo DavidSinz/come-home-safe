@@ -10,23 +10,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 public class PlacesListDatabase {
-    private static final String DATABASE_NAME = "placeslist.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final String DATABASE_NAME = "placelistdatabase.db";
+    private static final int DATABASE_VERSION = 1;
 
-    private static final String DATABASE_TABLE = "placeslistitems";
+    private static final String DATABASE_TABLE = "placelistitems";
 
     public static final String KEY_ID = "_id";
-    public static final String KEY_PLACE = "place";
-    public static final String KEY_STREET = "street";
-    public static final String KEY_NUMBER = "number";
-    public static final String KEY_ZIP_CODE = "zipcode";
-    public static final String KEY_CITY = "city";
+    public static final String KEY_ADRESS = "adress";
 
-    public static final int COLUMN_PLACE_INDEX = 1;
-    public static final int COLUMN_STREET_INDEX = 2;
-    public static final int COLUMN_NUMBER_INDEX = 3;
-    public static final int COLUMN_ZIP_CODE_INDEX = 4;
-    public static final int COLUMN_CITY_INDEX = 5;
+    public static final int COLUMN_ADRESS_INDEX = 1;
 
     private PlacesDBOpenHelper dbHelper;
 
@@ -49,38 +41,29 @@ public class PlacesListDatabase {
         db.close();
     }
 
-    public long insertPlaceItem(PlacesItem item) {
-        ContentValues newPlaceValues = new ContentValues();
+    public long insertPlacesItem(PlacesItem item) {
+        ContentValues newPlacesValues = new ContentValues();
 
-        newPlaceValues.put(KEY_STREET, item.getStreet());
-        newPlaceValues.put(KEY_NUMBER, item.getNumber());
-        newPlaceValues.put(KEY_ZIP_CODE, item.getZipCode());
-        newPlaceValues.put(KEY_NUMBER, item.getNumber());
-        newPlaceValues.put(KEY_CITY, item.getCity());
+        newPlacesValues.put(KEY_ADRESS, item.getAdress());
 
-        return db.insert(DATABASE_TABLE, null, newPlaceValues);
+        return db.insert(DATABASE_TABLE, null, newPlacesValues);
     }
 
     public void removePlacesItem(PlacesItem item) {
-        String whereClause = KEY_PLACE + " = '" + item.getPlace() + "' AND "
-                + KEY_STREET + " = '" + item.getStreet() + "' AND "
-                + KEY_NUMBER + " = '" + item.getNumber() + "'";
+        String whereClause = KEY_ADRESS + " = '" + item.getAdress() + "'";
 
         db.delete(DATABASE_TABLE, whereClause, null);
     }
 
     public ArrayList<PlacesItem> getAllPlacesItems() {
         ArrayList<PlacesItem> items = new ArrayList<>();
-        Cursor cursor = db.query(DATABASE_TABLE, new String[] { KEY_ID, KEY_PLACE, KEY_STREET, KEY_NUMBER, KEY_ZIP_CODE, KEY_CITY}, null, null, null, null, null);
+        Cursor cursor = db.query(DATABASE_TABLE, new String[] { KEY_ID,
+                KEY_ADRESS}, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                String place = cursor.getString(COLUMN_PLACE_INDEX);
-                String street = cursor.getString(COLUMN_STREET_INDEX);
-                String number = cursor.getString(COLUMN_NUMBER_INDEX);
-                String zipCode = cursor.getString(COLUMN_ZIP_CODE_INDEX);
-                String city = cursor.getString(COLUMN_CITY_INDEX);
+                String adress = cursor.getString(COLUMN_ADRESS_INDEX);
 
-                items.add(new PlacesItem(place, street, number, zipCode, city));
+                items.add(new PlacesItem(adress));
 
             } while (cursor.moveToNext());
         }
@@ -88,13 +71,10 @@ public class PlacesListDatabase {
     }
 
     private class PlacesDBOpenHelper extends SQLiteOpenHelper {
-        private static final String DATABASE_CREATE = "create table " + DATABASE_TABLE + " ("
-                + KEY_ID + " integer primary key autoincrement, "
-                + KEY_PLACE + " text not null, "
-                + KEY_STREET + " text, "
-                + KEY_NUMBER + " text, "
-                + KEY_ZIP_CODE + " text, "
-                + KEY_CITY + " text);";
+        private static final String DATABASE_CREATE = "create table "
+                + DATABASE_TABLE + " (" + KEY_ID
+                + " integer primary key autoincrement, " + KEY_ADRESS
+                + " text not null);";
 
         public PlacesDBOpenHelper(Context c, String dbname, SQLiteDatabase.CursorFactory factory, int version) {
             super(c, dbname, factory, version);
@@ -107,9 +87,7 @@ public class PlacesListDatabase {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            switch (oldVersion) {
-                case 1: db.execSQL("ALTER TABLE " + DATABASE_TABLE + " ADD COLUMN INVENTORY TEXT");
-            }
+
         }
     }
 }
