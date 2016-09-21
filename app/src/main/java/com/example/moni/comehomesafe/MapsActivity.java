@@ -1,9 +1,7 @@
 package com.example.moni.comehomesafe;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,10 +15,11 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -33,6 +32,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
 
 
 public class MapsActivity extends FragmentActivity
@@ -93,15 +94,15 @@ public class MapsActivity extends FragmentActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_travelmode:
-                buildDialog();
+                buildTravelDialog();
                 break;
 
             case R.id.button_destination:
-                Toast.makeText(MapsActivity.this, "button add destination.", Toast.LENGTH_SHORT).show();
+                buildDestinationDialog();
                 break;
 
             case R.id.button_add_companion:
-                createContactDialog();
+                buildContactDialog();
                 break;
 
             case R.id.button_start_navigation:
@@ -113,13 +114,35 @@ public class MapsActivity extends FragmentActivity
         }
     }
 
-    private void createContactDialog() {
-        Dialog dialog = new Dialog(MapsActivity.this);
-        dialog.setContentView(R.layout.contact_list_dialog);
-        ListView contactListView = (ListView ) dialog.findViewById(R.id.lv);
-        dialog.setCancelable(true);
-        dialog.setTitle("ListView");
-        dialog.show();
+    private void buildDestinationDialog() {
+
+    }
+
+    private void buildContactDialog() {
+        ContactsActivity contactsActivity = new ContactsActivity();
+        final ArrayList<ContactItem> contactItems = contactsActivity.getContactItems();
+        String[] names = new String[contactItems.size()];
+        for (int i = 0; i < contactItems.size(); i++) {
+            names[i] = contactItems.get(i).getName();
+        }
+
+        android.support.v7.app.AlertDialog.Builder alertDialog = new android.support.v7.app.AlertDialog.Builder(MapsActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View convertView = (View) inflater.inflate(R.layout.contact_list_dialog, null);
+        alertDialog.setView(convertView);
+        alertDialog.setTitle("Kontakt auswählen");
+        ListView listView = (ListView) convertView.findViewById(R.id.listView1);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, names);
+        listView.setAdapter(adapter);
+        alertDialog.show();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String name = contactItems.get(position).getName();
+                String number = contactItems.get(position).getNumber();
+            }
+        });
     }
 
     private void buildIntent() {
@@ -134,7 +157,7 @@ public class MapsActivity extends FragmentActivity
         startActivity(intentStartNav);
     }
 
-    private void buildDialog() {
+    private void buildTravelDialog() {
         String[] modeArray = new String[]{"zu Fuß", "mit dem Auto"};
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
                 builder.setTitle("Fortbewegungsmittel")
