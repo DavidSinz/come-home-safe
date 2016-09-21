@@ -2,7 +2,6 @@ package com.example.moni.comehomesafe;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -27,15 +25,12 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.lang.reflect.Array;
 
-
-public class MapsActivityAlt extends FragmentActivity
+public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -94,17 +89,22 @@ public class MapsActivityAlt extends FragmentActivity
         switch (v.getId()) {
             case R.id.button_travelmode:
                 buildDialog();
+                break;
 
             case R.id.button_destination:
-                Intent intentDestination = new Intent(this, SelectDestinationActivity.class);
-                startActivityForResult(intentDestination, REQUESTCODE_DESTINATION);
+                Toast.makeText(MapsActivity.this, "button add destination.", Toast.LENGTH_SHORT).show();
+                break;
 
             case R.id.button_add_companion:
-                Intent intentAddComp = new Intent(this, AddCompanionActivity.class);
-                startActivityForResult(intentAddComp, REQUESTCODE_COMPANION);
+                Toast.makeText(MapsActivity.this, "button add comp.", Toast.LENGTH_SHORT).show();
+                break;
 
             case R.id.button_start_navigation:
                 buildIntent();
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -122,7 +122,7 @@ public class MapsActivityAlt extends FragmentActivity
 
     private void buildDialog() {
         String[] modeArray = new String[]{"zu Fuß", "mit dem Auto"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivityAlt.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
                 builder.setTitle("Fortbewegungsmittel")
                 .setItems(modeArray, new DialogInterface.OnClickListener() {
                     @Override

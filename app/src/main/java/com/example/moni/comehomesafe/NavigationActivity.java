@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -68,8 +69,9 @@ public class NavigationActivity extends FragmentActivity
 
         createAddress();
 
-        new DirectionDownloadTask(this, start, destination).execute(createAddress());
-
+        if(start != null && destination != null) {
+            new DirectionDownloadTask(this, start, destination).execute(createAddress());
+        }
         getIntentExtras();
     }
 
@@ -100,13 +102,15 @@ public class NavigationActivity extends FragmentActivity
 
     @Override
     public void onDownloadFinished(List<LatLng> polyline) {
-        PolylineOptions route = new PolylineOptions();
-        route.addAll(polyline);
-        Polyline polylineRoute = mMap.addPolyline(route);
-        polylineRoute.setColor(Color.BLUE);
-        polylineRoute.setWidth(WIDTH_POLYLINE);
-        //oder in requestLocationUpdates? wobei da die polyline Null ist
-        checkForDiscrepancy(polyline);
+        if(polyline != null) {
+            PolylineOptions route = new PolylineOptions();
+            route.addAll(polyline);
+            Polyline polylineRoute = mMap.addPolyline(route);
+            polylineRoute.setColor(Color.BLUE);
+            polylineRoute.setWidth(WIDTH_POLYLINE);
+            //oder in requestLocationUpdates? wobei da die polyline Null ist
+            checkForDiscrepancy(polyline);
+        }
     }
 
     private void checkForDiscrepancy(List<LatLng> polyline) {
@@ -146,13 +150,8 @@ public class NavigationActivity extends FragmentActivity
     public void onConnected(Bundle bundle) {
         mGoogleApiClient.connect();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            Toast.makeText(NavigationActivity.this, "GPS nicht aktiviert", Toast.LENGTH_SHORT).show();
+
             return;
         }
         startLocationUpdates();
@@ -175,13 +174,7 @@ public class NavigationActivity extends FragmentActivity
                     .setFastestInterval(FASTEST_INTERVAL);
         }
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            Toast.makeText(NavigationActivity.this, "button add comp.", Toast.LENGTH_SHORT).show();
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);

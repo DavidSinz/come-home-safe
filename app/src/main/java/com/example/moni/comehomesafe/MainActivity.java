@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_map) {
-            Intent map = new Intent(this, MapsActivityAlt.class);
+            Intent map = new Intent(this, MapsActivity.class);
             startActivity(map);
         } else if (id == R.id.nav_places) {
             Intent places = new Intent(this, PlacesActivity.class);
