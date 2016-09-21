@@ -175,7 +175,7 @@ public class MapsActivity extends FragmentActivity
 
     private void setUpMyLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context, "Please turn on your GPS", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "GPS nicht aktiviert", Toast.LENGTH_LONG).show();
             return;
         }
         if (mMap != null) {
