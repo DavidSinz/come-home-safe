@@ -21,6 +21,8 @@ public class ContactsActivity extends AppCompatActivity {
     public static final String KEY_RESULT = "contact";
     private static final int RESULT_SELECT_CONTACT = 000002;
 
+    public ContactsActivity() {}
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,5 +141,9 @@ public class ContactsActivity extends AppCompatActivity {
 
     private void sortList() {
         contacts_adapter.notifyDataSetChanged();
+    }
+
+    public ArrayList<ContactItem> getContactItems() {
+        return contactItems;
     }
 }

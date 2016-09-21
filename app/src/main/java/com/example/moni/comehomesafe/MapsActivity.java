@@ -1,7 +1,9 @@
 package com.example.moni.comehomesafe;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +23,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -100,7 +105,7 @@ public class MapsActivity extends FragmentActivity
                 break;
 
             case R.id.button_add_companion:
-                Toast.makeText(MapsActivity.this, "button add comp.", Toast.LENGTH_SHORT).show();
+                createContactDialog();
                 break;
 
             case R.id.button_start_navigation:
@@ -110,6 +115,15 @@ public class MapsActivity extends FragmentActivity
             default:
                 break;
         }
+    }
+
+    private void createContactDialog() {
+        Dialog dialog = new Dialog(MapsActivity.this);
+        dialog.setContentView(R.layout.contact_list_dialog);
+        ListView contactListView = (ListView ) dialog.findViewById(R.id.lv);
+        dialog.setCancelable(true);
+        dialog.setTitle("ListView");
+        dialog.show();
     }
 
     private void buildIntent() {
