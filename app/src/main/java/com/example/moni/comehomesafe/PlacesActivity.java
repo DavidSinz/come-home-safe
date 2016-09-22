@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class PlacesActivity extends AppCompatActivity {
 
-    private ArrayList<PlacesItem> placesItems = new ArrayList<>();
+    private static ArrayList<PlacesItem> placesItems = new ArrayList<>();
     private PlacesListAdapter places_adapter;
     private PlacesListDatabase db_places;
 
@@ -131,5 +131,8 @@ public class PlacesActivity extends AppCompatActivity {
         places_adapter.notifyDataSetChanged();
     }
 
+    public static ArrayList<PlacesItem> getPlacesItems(){
+        return placesItems;
+    }
 
 }

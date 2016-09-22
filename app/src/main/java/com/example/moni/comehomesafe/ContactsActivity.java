@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class ContactsActivity extends AppCompatActivity {
 
-    private ArrayList<ContactItem> contactItems = new ArrayList<>();
+    private static ArrayList<ContactItem> contactItems = new ArrayList<>();
     private ContactListAdapter contacts_adapter;
     private ContactListDatabase db;
 
@@ -143,7 +143,7 @@ public class ContactsActivity extends AppCompatActivity {
         contacts_adapter.notifyDataSetChanged();
     }
 
-    public ArrayList<ContactItem> getContactItems() {
+    public static ArrayList<ContactItem> getContactItems() {
         return contactItems;
     }
 }

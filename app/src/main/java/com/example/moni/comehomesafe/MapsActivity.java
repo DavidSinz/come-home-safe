@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -37,7 +38,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MapsActivity extends FragmentActivity
@@ -50,6 +53,9 @@ public class MapsActivity extends FragmentActivity
     private static final int LNG_GERMANY = 10;
     private static final int CAMERA_ZOOM_GERMANY = 6;
     private static final int WHICH_MODE_DIALOG = 1;
+    private static final String TITLE_PLACES_DIALOG = "Zielort auswählen";
+    private static final String TITLE_CONTACT_DIALOG = "Kontakt auswählen";
+    private static final String TITLE_TRAVEL_DIALOG = "Fortbewegungsmittel";
 
     private GoogleMap mMap;
     private Location location;
@@ -86,11 +92,11 @@ public class MapsActivity extends FragmentActivity
         ImageButton btnAddCompanion = (ImageButton) findViewById(R.id.button_add_companion);
         btnAddCompanion.setOnClickListener(this);
         Button btnStartNavigation = (Button) findViewById(R.id.button_start_navigation);
-        if (companion != null && currentLocation != null && destination != null && travelmode != null) {
+        /*if (companion != null && currentLocation != null && destination != null && travelmode != null) {
             btnStartNavigation.setEnabled(true);
         } else {
             btnStartNavigation.setEnabled(false);
-        }
+        }*/
         btnStartNavigation.setOnClickListener(this);
     }
 
@@ -110,7 +116,7 @@ public class MapsActivity extends FragmentActivity
                 break;
 
             case R.id.button_start_navigation:
-                buildIntent();
+                buildNavigationIntent();
                 break;
 
             default:
@@ -119,37 +125,87 @@ public class MapsActivity extends FragmentActivity
     }
 
     private void buildDestinationDialog() {
+        final ArrayList<PlacesItem> placesItems = PlacesActivity.getPlacesItems();
+        final String[] places = new String[placesItems.size()];
+        for(int i = 0; i < placesItems.size(); i++){
+            places[i] = placesItems.get(i).getAdress();
+        }
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this);
+        //LayoutInflater inflater = getLayoutInflater();
+        //View convertView = (View) inflater.inflate(R.layout.places_dialog, null);
+        //alertDialog.setView(convertView);
+        alertDialog.setTitle(TITLE_PLACES_DIALOG);
+        //ListView listView = (ListView) convertView.findViewById(R.id.placesListView);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, places);
+        //listView.setAdapter(adapter);
+        alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                for(int i = 0; i < placesItems.size(); i++) {
+                    if (which == i) {
+                        String address = placesItems.get(which).getAdress();
+                        //nur zum testen
+                        destination = new LatLng(49.0293923, 12.0996233);
+                        Log.d("address: ", address);
+                    }
+                }
+            }
+        });
+        alertDialog.show();
+
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+                String address = placesItems.get(position).getAdress();
+                Log.d("Adresse: ", address);
+                alertDialog.
+                //Adresse umwandlen und übergeben
+            }
+        });*/
 
     }
 
     private void buildContactDialog() {
-        ContactsActivity contactsActivity = new ContactsActivity();
-        final ArrayList<ContactItem> contactItems = contactsActivity.getContactItems();
+        final ArrayList<ContactItem> contactItems = ContactsActivity.getContactItems();
         String[] names = new String[contactItems.size()];
         for (int i = 0; i < contactItems.size(); i++) {
             names[i] = contactItems.get(i).getName();
         }
-
-        android.support.v7.app.AlertDialog.Builder alertDialog = new android.support.v7.app.AlertDialog.Builder(MapsActivity.this);
-        LayoutInflater inflater = getLayoutInflater();
-        View convertView = (View) inflater.inflate(R.layout.contact_list_dialog, null);
-        alertDialog.setView(convertView);
-        alertDialog.setTitle("Kontakt auswählen");
-        ListView listView = (ListView) convertView.findViewById(R.id.listView1);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this);
+        //LayoutInflater inflater = getLayoutInflater();
+        //View convertView = (View) inflater.inflate(R.layout.contact_list_dialog, null);
+        //alertDialog.setView(convertView);
+        alertDialog.setTitle(TITLE_CONTACT_DIALOG);
+        //ListView listView = (ListView) convertView.findViewById(R.id.listView1);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, names);
-        listView.setAdapter(adapter);
+        //listView.setAdapter(adapter);
+        alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                for(int i = 0; i < contactItems.size(); i++){
+                    if(which == i){
+                        String number = contactItems.get(which).getNumber();
+                        companion = number;
+                        Log.d("companion: ", number);
+                        //Name UND Nummer? reicht Nummer?
+                    }
+                }
+            }
+        });
         alertDialog.show();
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String name = contactItems.get(position).getName();
                 String number = contactItems.get(position).getNumber();
+                companion = number;
+
             }
-        });
+        });*/
     }
 
-    private void buildIntent() {
+    private void buildNavigationIntent() {
         //null
         Bundle args = new Bundle();
         args.putParcelable("START", currentLocation);
@@ -164,7 +220,7 @@ public class MapsActivity extends FragmentActivity
     private void buildTravelDialog() {
         String[] modeArray = new String[]{"zu Fuß", "mit dem Auto"};
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                builder.setTitle("Fortbewegungsmittel")
+                builder.setTitle(TITLE_TRAVEL_DIALOG)
                 .setItems(modeArray, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -221,6 +277,11 @@ public class MapsActivity extends FragmentActivity
         }
         if (mMap != null) {
             mMap.setMyLocationEnabled(true);
+            if (mLocation != null) {
+                double latitude = mLocation.getLatitude();
+                double longitude = mLocation.getLongitude();
+                currentLocation = new LatLng(latitude, longitude);
+            }
         }
     }
 
@@ -236,11 +297,11 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mGoogleApiClient.connect();
-        if (mLocation != null) {
+        /*if (mLocation != null) {
             double latitude = mLocation.getLatitude();
             double longitude = mLocation.getLongitude();
             currentLocation = new LatLng(latitude, longitude);
-        }
+        }*/
     }
 
     @Override

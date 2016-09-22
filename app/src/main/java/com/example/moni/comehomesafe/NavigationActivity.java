@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -59,7 +60,7 @@ public class NavigationActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_navigation);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -67,12 +68,21 @@ public class NavigationActivity extends FragmentActivity
 
         createGoogleApiClient();
 
+        initButton();
+
         createAddress();
 
         if(start != null && destination != null) {
             new DirectionDownloadTask(this, start, destination).execute(createAddress());
         }
         getIntentExtras();
+    }
+
+    private void initButton() {
+        Button btnStop = (Button) findViewById(R.id.button_stop_navigation);
+        //TODO Button als Listener registieren
+        //btnStop.setOnClickListener();
+
     }
 
     private void getIntentExtras() {
