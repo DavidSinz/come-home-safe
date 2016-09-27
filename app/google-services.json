@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "74152552089",
+    "firebase_url": "https://myapp-b8624.firebaseio.com",
+    "project_id": "myapp-b8624",
+    "storage_bucket": "myapp-b8624.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74152552089:android:a4458cf3c6faaaf6",
+        "android_client_info": {
+          "package_name": "com.example.big_d.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74152552089-mra14rooa8t4s5jl4089jnsdtsp3td31.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6H8xoF-UIQm0JQI1v2JUxcEyfx2bPdq4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74152552089:android:43fec1ae539b1f69",
+        "android_client_info": {
+          "package_name": "com.example.moni.comehomesafe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74152552089-mra14rooa8t4s5jl4089jnsdtsp3td31.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6H8xoF-UIQm0JQI1v2JUxcEyfx2bPdq4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
