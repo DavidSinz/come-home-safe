@@ -23,10 +23,10 @@ public class DirectionDownloadTask extends AsyncTask<String, Integer, String>{
 
     private DownloadListener listener;
     private LatLng start;
-    private LatLng destination;
+    private String destination;
     private List<LatLng> polyline;
 
-    public DirectionDownloadTask(DownloadListener listener, LatLng start, LatLng destination) {
+    public DirectionDownloadTask(DownloadListener listener, LatLng start, String destination) {
         this.listener = listener;
         this.start = start;
         this.destination = destination;

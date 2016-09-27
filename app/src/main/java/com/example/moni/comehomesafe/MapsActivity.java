@@ -47,23 +47,22 @@ public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback, View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    private static final int REQUESTCODE_DESTINATION = 1;
-    private static final int REQUESTCODE_COMPANION = 2;
     private static final int LAT_GERMANY = 51;
     private static final int LNG_GERMANY = 10;
     private static final int CAMERA_ZOOM_GERMANY = 6;
-    private static final int WHICH_MODE_DIALOG = 1;
+    private static final int WHICH_MODE_DIALOG = 0;
     private static final String TITLE_PLACES_DIALOG = "Zielort auswählen";
     private static final String TITLE_CONTACT_DIALOG = "Kontakt auswählen";
     private static final String TITLE_TRAVEL_DIALOG = "Fortbewegungsmittel";
 
     private GoogleMap mMap;
     private Location location;
-    private LatLng destination;
+    private String destination;
     private String companion;
     private LatLng currentLocation;
     private Context context;
     private String travelmode;
+    private Button btnStartNavigation;
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLocation;
@@ -91,13 +90,16 @@ public class MapsActivity extends FragmentActivity
         btnDestination.setOnClickListener(this);
         ImageButton btnAddCompanion = (ImageButton) findViewById(R.id.button_add_companion);
         btnAddCompanion.setOnClickListener(this);
-        Button btnStartNavigation = (Button) findViewById(R.id.button_start_navigation);
-        /*if (companion != null && currentLocation != null && destination != null && travelmode != null) {
+        btnStartNavigation = (Button) findViewById(R.id.button_start_navigation);
+        btnStartNavigation.setOnClickListener(this);
+    }
+
+    private void enableBtnStart(){
+        if (companion != null && destination != null && travelmode != null) {
             btnStartNavigation.setEnabled(true);
         } else {
             btnStartNavigation.setEnabled(false);
-        }*/
-        btnStartNavigation.setOnClickListener(this);
+        }
     }
 
     @Override
@@ -131,38 +133,32 @@ public class MapsActivity extends FragmentActivity
             places[i] = placesItems.get(i).getAdress();
         }
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this);
-        //LayoutInflater inflater = getLayoutInflater();
-        //View convertView = (View) inflater.inflate(R.layout.places_dialog, null);
-        //alertDialog.setView(convertView);
         alertDialog.setTitle(TITLE_PLACES_DIALOG);
-        //ListView listView = (ListView) convertView.findViewById(R.id.placesListView);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, places);
-        //listView.setAdapter(adapter);
         alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 for(int i = 0; i < placesItems.size(); i++) {
                     if (which == i) {
                         String address = placesItems.get(which).getAdress();
-                        //nur zum testen
-                        destination = new LatLng(49.0293923, 12.0996233);
-                        Log.d("address: ", address);
+                        destination = concatAddress(address);
+                        Log.d("destination: ", address);
                     }
                 }
             }
         });
         alertDialog.show();
+    }
 
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                String address = placesItems.get(position).getAdress();
-                Log.d("Adresse: ", address);
-                alertDialog.
-                //Adresse umwandlen und übergeben
+    private String concatAddress(String address){
+        String result = "";
+        for(int i = 0; i < address.length(); i++){
+            if(address.charAt(i) == '/'){
+                result = address.substring(i + 1, address.length());
+                break;
             }
-        });*/
-
+        } Log.d("result: ", result);
+        return result;
     }
 
     private void buildContactDialog() {
@@ -172,13 +168,8 @@ public class MapsActivity extends FragmentActivity
             names[i] = contactItems.get(i).getName();
         }
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this);
-        //LayoutInflater inflater = getLayoutInflater();
-        //View convertView = (View) inflater.inflate(R.layout.contact_list_dialog, null);
-        //alertDialog.setView(convertView);
         alertDialog.setTitle(TITLE_CONTACT_DIALOG);
-        //ListView listView = (ListView) convertView.findViewById(R.id.listView1);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, names);
-        //listView.setAdapter(adapter);
         alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -193,23 +184,13 @@ public class MapsActivity extends FragmentActivity
             }
         });
         alertDialog.show();
-
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = contactItems.get(position).getName();
-                String number = contactItems.get(position).getNumber();
-                companion = number;
-
-            }
-        });*/
     }
 
     private void buildNavigationIntent() {
         //null
         Bundle args = new Bundle();
-        args.putParcelable("START", currentLocation);
-        args.putParcelable("DESTINATION", destination);
+        //args.putParcelable("START", currentLocation);
+        args.putString("DESTINATION", destination);
         args.putString("COMPANION", companion);
         args.putString("MODE", travelmode);
         Intent intentStartNav = new Intent(this, NavigationActivity.class);
@@ -235,25 +216,6 @@ public class MapsActivity extends FragmentActivity
                 .show();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUESTCODE_DESTINATION) {
-            if (resultCode == RESULT_OK) {
-                if(data != null){
-                    destination = data.getExtras().getParcelable("RESULT");
-                }
-            }
-        } else if(requestCode == REQUESTCODE_COMPANION){
-            if(resultCode == RESULT_OK){
-                if(data != null){
-                    companion = data.getExtras().getString("RESULT");
-                    //Datentyp für companion?
-                }
-            }
-        }
-    }
-
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -272,15 +234,14 @@ public class MapsActivity extends FragmentActivity
 
     private void setUpMyLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context, "GPS nicht aktiviert", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "GPS nicht aktiviert", Toast.LENGTH_LONG).show();
             return;
         }
         if (mMap != null) {
             mMap.setMyLocationEnabled(true);
             if (mLocation != null) {
-                double latitude = mLocation.getLatitude();
-                double longitude = mLocation.getLongitude();
-                currentLocation = new LatLng(latitude, longitude);
+                currentLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+                Log.d("currentLocation map", currentLocation.toString());;
             }
         }
     }
