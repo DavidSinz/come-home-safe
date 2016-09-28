@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">ComeHomeSafe</string>
-
-
+    
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -10,8 +9,24 @@
     <string name="title_activity_maps">Map</string>
 
     <string name="btn_text_stop_navigation">Stop</string>
-
     <string name="btn_text_start_navigation">Start</string>
+    
+    <string name="title_stop_dialog">Wirklich beenden?</string>
+    <string name="text_stop_dialog">Möchtest du die Navigation wirklich beenden?</string>
+
+    <string name="dialog_btn_yes">Ja</string>
+    <string name="dialog_btn_no">Nein</string>
+
+    <string name="title_route_dialog">Abweichung von Route</string>
+    <string name="text_route_dialog">Möchtest du von hier aus eine neue Route starten?</string>
+
+    <string name="title_start_dialog">Losgehen</string>
+    <string name="text_start_dialog">Möchtest du jetzt losgehen und deinen Begleiter benachrichtigen?</string>
+
+    <string name="title_arrived_dialog">Gut angekommen?</string>
+    <string name="text_arrived_dialog">Bist du gut angekommen und möchtest du deinen Begleiter benachrichtigen?</string>
+
+    <string name="dialog_btn_not_yet">Noch nicht</string>
 
     <string name="importiere_kontakt_vom_telefon">Importiere Kontakt vom Telefon</string>
     <string name="name">Name</string>
