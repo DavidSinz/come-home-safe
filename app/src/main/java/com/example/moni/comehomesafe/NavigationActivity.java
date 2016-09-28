@@ -48,7 +48,7 @@ public class NavigationActivity extends FragmentActivity
     private static final long UPDATE_INTERVAL = 10000;
     private static final int WIDTH_POLYLINE = 8;
     private static final int CAMERA_ZOOM_LOCATION = 18;
-    private static final int MAX_TIME_DISCREPANCY = 1000;
+    private static final int MAX_TIME_DISCREPANCY = 500;
     private static final double MAX_DISCREPANCY = 0.0003;
 
     private GoogleMap mMap;
