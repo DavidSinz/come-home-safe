@@ -29,6 +29,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -41,25 +42,23 @@ public class NavigationActivity extends FragmentActivity
 
     private static final String ADDRESS = "https://maps.googleapis.com/maps/api/directions/json?";
     private static final String GOOGLE_DIRECTIONS_KEY = "AIzaSyC9a7v6ZEyOdTCU48xfJpDsew-1TXcZn7Q";
-    private static final long FASTEST_INTERVAL = 10000;
-    private static final long UPDATE_INTERVAL = 5000;
+    private static final long FASTEST_INTERVAL = 5000;
+    private static final long UPDATE_INTERVAL = 10000;
     private static final int WIDTH_POLYLINE = 8;
-    private static final int CAMERA_ZOOM_LOCATION = 15;
+    private static final int CAMERA_ZOOM_LOCATION = 18;
     private static final int MAX_TIME_DISCREPANCY = 1000;
-    private static final double MAX_DISCREPANCY = 0.0003;
+    private static final double MAX_DISCREPANCY = 0.0005;
 
-    private Context context;
     private GoogleMap mMap;
     private double startLat;
     private double startLng;
     //private LatLng start;
     private String destination;
-    private double destinationLat;
-    private double destinationLng;
     private LatLng currentLocation;
     private String companion;
     private String travelmode;
     List<LatLng> polyline;
+    private Marker mMarker;
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLocation;
@@ -162,7 +161,7 @@ public class NavigationActivity extends FragmentActivity
                         count = 0;
                         Log.d("count: ", String.valueOf(count));
                         Toast.makeText(this, "eingehalten", Toast.LENGTH_SHORT).show();
-                        if(i == polyline.size()){
+                        if (i == polyline.size()) {
                             Toast.makeText(this, "Ziel erreicht", Toast.LENGTH_LONG).show();
                         }
                         break;
@@ -229,7 +228,7 @@ public class NavigationActivity extends FragmentActivity
         }
         Log.d("onConnected", "a");
 
-        if(mLocation != null) {
+        if (mLocation != null) {
             double latitude = mLocation.getLatitude();
             double longitude = mLocation.getLongitude();
             currentLocation = new LatLng(latitude, longitude);
@@ -239,31 +238,16 @@ public class NavigationActivity extends FragmentActivity
     }
 
     private void startLocationUpdates() {
-        //if (mLocationRequest == null) {
-            /*mLocationRequest = LocationRequest.create()
-                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                    .setInterval(UPDATE_INTERVAL)
-                    .setFastestInterval(FASTEST_INTERVAL);*/
-            LocationRequest mLocationRequest = new LocationRequest();
-            mLocationRequest.setInterval(10000);
-            mLocationRequest.setFastestInterval(5000);
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        //}
-
-        /*Log.d("mLocation: ", mLocation.toString());
-        double latitude = mLocation.getLatitude();
-        double longitude = mLocation.getLongitude();
-        currentLocation = new LatLng(latitude, longitude);
-        startLat = currentLocation.latitude;
-        startLng = currentLocation.longitude;
-        Log.d("currentLocation nav ", currentLocation.toString());*/
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(NavigationActivity.this, "GPS nicht aktiviert", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
         Log.d("startLocationUpdates", "a");
@@ -286,7 +270,7 @@ public class NavigationActivity extends FragmentActivity
     @Override
     public void onLocationChanged(Location location) {
         mLocation = location;
-        if(mLocation != null) {
+        if (mLocation != null) {
             checkForDiscrepancy();
             //anstatt in onConnected oder zusätzlich?
             //startLocationUpdates();
@@ -300,7 +284,8 @@ public class NavigationActivity extends FragmentActivity
             startLng = currentLocation.longitude;
             Log.d("currentLocation nav ", currentLocation.toString());
             //update UI
-            mMap.addMarker(new MarkerOptions().position(currentLocation).title("aktuelle Position"));
+            mMarker.setPosition(currentLocation);
+            //mMap.addMarker(new MarkerOptions().position(currentLocation).title("aktuelle Position"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, CAMERA_ZOOM_LOCATION));
         }
     }
@@ -318,7 +303,11 @@ public class NavigationActivity extends FragmentActivity
 
     protected void stopLocationUpdates() {
         //--> Fehlermeldung: GoogleApiClient is not connected yet
-        //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        // LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
+
     }
 
     @Override

@@ -152,10 +152,13 @@ public class MapsActivity extends FragmentActivity
 
     private String concatAddress(String address){
         String result = "";
-        for(int i = 0; i < address.length(); i++){
-            if(address.charAt(i) == '/'){
-                result = address.substring(i + 1, address.length());
-                break;
+        for(int i = 0; i <= address.length(); i++){
+            if(address.charAt(i) == ':'){
+                result = address.substring(i + 2, address.length());
+            }
+            if(i == address.length() && address.charAt(i) == ' '){
+                Log.d("i", String.valueOf(i));
+                result = address.substring(0, i-1);
             }
         } Log.d("result: ", result);
         return result;
