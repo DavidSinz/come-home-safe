@@ -284,7 +284,9 @@ public class NavigationActivity extends FragmentActivity
             startLng = currentLocation.longitude;
             Log.d("currentLocation nav ", currentLocation.toString());
             //update UI
-            mMarker.setPosition(currentLocation);
+            if(mMarker!= null) {
+                mMarker.setPosition(currentLocation);
+            }
             //mMap.addMarker(new MarkerOptions().position(currentLocation).title("aktuelle Position"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, CAMERA_ZOOM_LOCATION));
         }
@@ -321,7 +323,7 @@ public class NavigationActivity extends FragmentActivity
 
     private String createAddress() {
         Log.d("ADDRESS: ", ADDRESS + "origin=" + startLat + "," + startLng + "&destination=" + destination + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY);
-        return ADDRESS + "origin=" + startLat + "," + startLng + "&destination=" + destination + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY;
+        return (ADDRESS + "origin=" + startLat + "," + startLng + "&destination=" + destination + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY);
     }
 
 }

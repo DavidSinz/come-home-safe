@@ -94,7 +94,7 @@ public class MapsActivity extends FragmentActivity
         btnStartNavigation.setOnClickListener(this);
     }
 
-    private void enableBtnStart(){
+    private void enableBtnStart() {
         if (companion != null && destination != null && travelmode != null) {
             btnStartNavigation.setEnabled(true);
         } else {
@@ -129,8 +129,9 @@ public class MapsActivity extends FragmentActivity
     private void buildDestinationDialog() {
         final ArrayList<PlacesItem> placesItems = PlacesActivity.getPlacesItems();
         final String[] places = new String[placesItems.size()];
-        for(int i = 0; i < placesItems.size(); i++){
+        for (int i = 0; i < placesItems.size(); i++) {
             places[i] = placesItems.get(i).getAdress();
+            places[i] = reformatAddress(places[i]);
         }
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MapsActivity.this);
         alertDialog.setTitle(TITLE_PLACES_DIALOG);
@@ -138,7 +139,7 @@ public class MapsActivity extends FragmentActivity
         alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                for(int i = 0; i < placesItems.size(); i++) {
+                for (int i = 0; i < placesItems.size(); i++) {
                     if (which == i) {
                         String address = placesItems.get(which).getAdress();
                         destination = concatAddress(address);
@@ -150,17 +151,34 @@ public class MapsActivity extends FragmentActivity
         alertDialog.show();
     }
 
-    private String concatAddress(String address){
+    private String reformatAddress(String address) {
         String result = "";
-        for(int i = 0; i <= address.length(); i++){
-            if(address.charAt(i) == ':'){
-                result = address.substring(i + 2, address.length());
+        int count = 0;
+        for (int i = 0; i < address.length(); i++) {
+            if (count == 0 && address.charAt(i) == '/') {
+                result = address.substring(0, i) + ": " + address.substring(i + 1, address.length());
+                count++;
+            } else if (count != 0 && address.charAt(i) == '/') {
+                result = result.substring(0, i + 1) + " " + address.substring(i + 1, address.length());
             }
-            if(i == address.length() && address.charAt(i) == ' '){
-                Log.d("i", String.valueOf(i));
-                result = address.substring(0, i-1);
+        }
+        return result;
+    }
+
+    private String concatAddress(String address) {
+        String result = "";
+        int count = 0;
+        for (int i = 0; i < address.length(); i++) {
+            if (address.charAt(i) == '/' && count == 0) {
+                result = address.substring(i + 1, address.length());
+                count = i;
+            } else if (address.charAt(i) == '/' && count != 0) {
+                result = result.substring(0, i - count - 1) + "," + result.substring(i - count, result.length());
+            } else if (address.charAt(i) == ' ' && address.length() == i + 1) {
+                result = result.substring(0, result.length() - 1);
             }
-        } Log.d("result: ", result);
+        }
+        Log.d("result: ", result);
         return result;
     }
 
@@ -176,8 +194,8 @@ public class MapsActivity extends FragmentActivity
         alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                for(int i = 0; i < contactItems.size(); i++){
-                    if(which == i){
+                for (int i = 0; i < contactItems.size(); i++) {
+                    if (which == i) {
                         String number = contactItems.get(which).getNumber();
                         companion = number;
                         Log.d("companion: ", number);
@@ -204,11 +222,11 @@ public class MapsActivity extends FragmentActivity
     private void buildTravelDialog() {
         String[] modeArray = new String[]{"zu Fuß", "mit dem Auto"};
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                builder.setTitle(TITLE_TRAVEL_DIALOG)
+        builder.setTitle(TITLE_TRAVEL_DIALOG)
                 .setItems(modeArray, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(which == WHICH_MODE_DIALOG){
+                        if (which == WHICH_MODE_DIALOG) {
                             travelmode = "walking";
                         } else {
                             travelmode = "driving";
@@ -244,7 +262,8 @@ public class MapsActivity extends FragmentActivity
             mMap.setMyLocationEnabled(true);
             if (mLocation != null) {
                 currentLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-                Log.d("currentLocation map", currentLocation.toString());;
+                Log.d("currentLocation map", currentLocation.toString());
+                ;
             }
         }
     }
