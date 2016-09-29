@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.IOException;
 import java.util.List;
 
 public class NavigationActivity extends FragmentActivity
@@ -70,6 +71,7 @@ public class NavigationActivity extends FragmentActivity
     private LocationManager locationManager;
 
     SendSMS sms = new SendSMS();
+    Geocoder geocoder = new Geocoder(this);
 
     int count = 0;
 
@@ -213,12 +215,9 @@ public class NavigationActivity extends FragmentActivity
                     }
                     break;
                 } else {
-                    Log.d("currentLocation check: ", currentLocation.toString());
                     count++;
-                    Log.d("count: ", String.valueOf(count));
                     if (count >= MAX_TIME_DISCREPANCY) {
                         //TODO Benachrichtigung versenden etc.
-                        Log.d("Routenabweichung: ", String.valueOf(count));
                         Toast.makeText(this, "Routenabweichung", Toast.LENGTH_SHORT).show();
                         createNewRouteDialog();
                     }
@@ -246,7 +245,6 @@ public class NavigationActivity extends FragmentActivity
     private void convertAddress() {
         if (destination != null && !destination.isEmpty()) {
             try {
-                Geocoder geocoder = new Geocoder(this);
                 List<android.location.Address> addressList = geocoder.getFromLocationName(destination, 1);
                 if (addressList != null && addressList.size() > 0) {
                     latDestination = addressList.get(0).getLatitude();
@@ -292,18 +290,29 @@ public class NavigationActivity extends FragmentActivity
         dialog.setPositiveButton(R.string.dialog_btn_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                startDownload();
                 dialog.cancel();
+                startDownload();
             }
         });
         dialog.setNegativeButton(R.string.dialog_btn_no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //TODO Benachrichtigung
-                NavigationActivity.this.finish();
+                sms.sendMessage(companion, ("Irgendetwas stimmt nicht. Mein Standort ist: " + getAddress() ));
             }
         });
         dialog.show();
+    }
+
+    private String getAddress() {
+        String result = "";
+        try {
+            List<android.location.Address> resultList = geocoder.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1);
+            if (resultList.size() > 0) {
+                result = String.valueOf(resultList.get(0));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } return result;
     }
 
     private void createGoogleApiClient() {
@@ -423,7 +432,6 @@ public class NavigationActivity extends FragmentActivity
     }
 
     private String createAddress() {
-        Log.d("ADDRESS: ", ADDRESS + "origin=" + startLat + "," + startLng + "&destination=" + destination + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY);
         return (ADDRESS + "origin=" + startLat + "," + startLng + "&destination=" + destination + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY);
     }
 
