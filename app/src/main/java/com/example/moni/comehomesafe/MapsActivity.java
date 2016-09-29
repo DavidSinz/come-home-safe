@@ -159,14 +159,23 @@ public class MapsActivity extends FragmentActivity
             if (address.charAt(i) == '/' && count == 0) {
                 result = address.substring(i + 1, address.length());
                 count = i;
-            } else if (address.charAt(i) == '/' && count != 0) {
+            }
+            else if (address.charAt(i) == '/' && count != 0) {
                 result = result.substring(0, i - count - 1) + "," + result.substring(i - count, result.length());
             } else if (address.charAt(i) == ' ' && address.length() == i + 1) {
                 result = result.substring(0, result.length() - 1);
             }
-        }
+        }//result = deleteSpaces(result);
         Log.d("result: ", result);
         return result;
+    }
+
+    private String deleteSpaces(String result) {
+        for(int i = 0; i < result.length(); i++){
+            if(result.charAt(i) != ' '){
+                result += result.charAt(i);
+            }
+        } return result;
     }
 
     private void buildContactDialog() {

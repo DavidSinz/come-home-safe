@@ -12,4 +12,9 @@
     tools:context="com.example.moni.comehomesafe.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!" />
+
 </RelativeLayout>
