@@ -1,5 +1,7 @@
 package com.example.moni.comehomesafe;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -114,10 +116,24 @@ public class ContactsActivity extends AppCompatActivity {
         updateList();
     }
 
-    private void removeContactAtPos(int position) {
+    private void removeContactAtPos(final int position) {
         if (contactItems.get(position) != null) {
-            db.removeContactItem(contactItems.get(position));
-            updateList();
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ContactsActivity.this);
+            alertDialog.setTitle("Ort löschen?");
+            alertDialog.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    db.removeContactItem(contactItems.get(position));
+                    updateList();
+                }
+            });
+            alertDialog.show();
         }
     }
 
