@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:orientation="vertical"
     android:padding="30dp"
     android:weightSum="1">
 
     <Spinner
         android:id="@+id/place_spinner"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp" />
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
         android:id="@+id/edit_street"
-        android:hint="@string/strasse"/>
-
-    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
+        android:hint="@string/strasse"
+        android:paddingTop="10dp" />
+
+    <EditText
         android:id="@+id/edit_number"
-        android:inputType="number"
-        android:hint="@string/hausnummer"/>
-
-    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
+        android:hint="@string/hausnummer"
+        android:inputType="number"
+        android:paddingTop="10dp" />
+
+    <EditText
         android:id="@+id/edit_zip_code"
-        android:inputType="number"
-        android:hint="@string/postleitzahl"/>
-
-    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
+        android:hint="@string/postleitzahl"
+        android:inputType="number"
+        android:paddingTop="10dp" />
+
+    <EditText
         android:id="@+id/edit_city"
-        android:hint="@string/stadt"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/stadt"
+        android:paddingTop="10dp" />
 
     <Button
         android:id="@+id/addplace_button"
-        android:paddingTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/zu_orte_hunzug_gen" />
+        android:paddingTop="20dp"
+        android:text="@string/zu_orte_hinzufuegen" />
 
 </LinearLayout>

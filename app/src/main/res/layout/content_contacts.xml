@@ -8,17 +8,16 @@
     tools:context="com.example.moni.comehomesafe.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_contact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:src="@android:drawable/ic_input_add"
-        android:layout_weight="0.91"/>
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_weight="0.91"
+        android:src="@android:drawable/ic_input_add" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -33,6 +32,5 @@
             android:padding="10dp" />
 
     </LinearLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>

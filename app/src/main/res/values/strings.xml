@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">ComeHomeSafe</string>
-    
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -10,7 +10,7 @@
 
     <string name="btn_text_stop_navigation">Stop</string>
     <string name="btn_text_start_navigation">Start</string>
-    
+
     <string name="title_stop_dialog">Wirklich beenden?</string>
     <string name="text_stop_dialog">Möchtest du die Navigation wirklich beenden?</string>
 
@@ -43,9 +43,15 @@
     <string name="hausnummer">Hausnummer</string>
     <string name="postleitzahl">Postleitzahl</string>
     <string name="stadt">Stadt</string>
-    <string name="zu_orte_hunzug_gen">Zu Orte Hunzugügen</string>
+    <string name="zu_orte_hinzufuegen">Zu Orte Hinzufügen</string>
     <string name="places">Orte</string>
     <string name="contacts">Kontakte</string>
+    <string name="missing_declaration_1">Fehlende Angaben</string>
+    <string name="missing_declaration_2">Es wurden nicht alle Felder ausgefüllt</string>
+    <string name="delete_place">Ort löschen?</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="ok">OK</string>
+    <string name="delete_contact">Kontakt löschen?</string>
 
     <string-array name="place_list">
         <item>Zuhause</item>

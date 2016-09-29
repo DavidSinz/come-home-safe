@@ -33,6 +33,20 @@ public class PlacesActivity extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_places);
+
+        initLayout();
+        initDB();
+        initUI();
+        initPlacesList();
+    }
+
+    @Override
+    protected void onDestroy() {
+        db_places.close();
+        super.onDestroy();
+    }
+
+    private void initLayout() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.places);
@@ -45,17 +59,6 @@ public class PlacesActivity extends AppCompatActivity implements NavigationView.
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_places);
         navigationView.setNavigationItemSelectedListener(this);
-
-        initDB();
-        initUI();
-        initPlacesList();
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        db_places.close();
-        super.onDestroy();
     }
 
     private void initDB() {
@@ -125,14 +128,14 @@ public class PlacesActivity extends AppCompatActivity implements NavigationView.
     private void removePlaceAtPos(final int position) {
         if (placesItems.get(position) != null) {
             final AlertDialog.Builder alertDialog = new AlertDialog.Builder(PlacesActivity.this);
-            alertDialog.setTitle("Ort löschen?");
-            alertDialog.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+            alertDialog.setTitle(R.string.delete_place);
+            alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
                 }
             });
-            alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            alertDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     db_places.removePlacesItem(placesItems.get(position));
@@ -163,10 +166,6 @@ public class PlacesActivity extends AppCompatActivity implements NavigationView.
 
     private void sortList() {
         places_adapter.notifyDataSetChanged();
-    }
-
-    public static ArrayList<PlacesItem> getPlacesItems(){
-        return placesItems;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

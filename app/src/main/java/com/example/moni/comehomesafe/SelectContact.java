@@ -51,15 +51,13 @@ public class SelectContact extends Activity {
     private void contactPicked(Intent data) {
         Cursor cursor;
         try {
-            String name = null;
-            String number = null;
             Uri uri = data.getData();
             cursor = getContentResolver().query(uri, null, null, null, null);
             cursor.moveToFirst();
             int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
             int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-            name = cursor.getString(nameIndex);
-            number = cursor.getString(numberIndex);
+            String name = cursor.getString(nameIndex);
+            String number = cursor.getString(numberIndex);
             textViewName.setText(name);
             textViewNumber.setText(number);
         } catch (Exception e) {
@@ -84,15 +82,19 @@ public class SelectContact extends Activity {
                     setResult(Activity.RESULT_OK, resultIntent);
                     finish();
                 } else {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SelectContact.this);
-                    alertDialogBuilder.setTitle("Fehlende Angaben");
-                    alertDialogBuilder.setMessage("Es fehlt der Name oder die Telefonnummer").setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {}
-                    });
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
+                    missingDeclarationDialog();
                 }
             }
         });
+    }
+
+    private void missingDeclarationDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(getString(R.string.missing_declaration_1));
+        alertDialogBuilder.setMessage(getString(R.string.missing_declaration_2)).setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {}
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

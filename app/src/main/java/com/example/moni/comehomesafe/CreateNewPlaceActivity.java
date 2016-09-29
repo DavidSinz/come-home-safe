@@ -14,7 +14,6 @@ import android.widget.Spinner;
 public class CreateNewPlaceActivity extends Activity {
 
     private EditText editStreet, editNumber, editZipCode, editCity;
-    private String[] states;
     private Spinner editPlace;
 
 
@@ -27,15 +26,16 @@ public class CreateNewPlaceActivity extends Activity {
         editZipCode = (EditText) findViewById(R.id.edit_zip_code);
         editCity = (EditText) findViewById(R.id.edit_city);
 
-        states = getResources().getStringArray(R.array.place_list);
+        initSpinner();
+        initFinishButton();
+    }
 
+    private void initSpinner() {
+        String[] placesArray = getResources().getStringArray(R.array.place_list);
         editPlace = (Spinner) findViewById(R.id.place_spinner);
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, states);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, placesArray);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         editPlace.setAdapter(dataAdapter);
-
-        initFinishButton();
     }
 
     private void initFinishButton() {
@@ -57,16 +57,20 @@ public class CreateNewPlaceActivity extends Activity {
                     setResult(Activity.RESULT_OK, resultIntent);
                     finish();
                 } else {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CreateNewPlaceActivity.this);
-                    alertDialogBuilder.setTitle("Fehlende Angaben");
-                    alertDialogBuilder.setMessage("Es fehlen Angaben bei der Adresse").setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
+                    missingDeclarationDialog();
                 }
             }
         });
+    }
+
+    private void missingDeclarationDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CreateNewPlaceActivity.this);
+        alertDialogBuilder.setTitle(R.string.missing_declaration_1);
+        alertDialogBuilder.setMessage(R.string.missing_declaration_2).setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

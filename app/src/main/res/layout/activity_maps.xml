@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -17,44 +15,39 @@
         tools:layout="@layout/activity_maps" />
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
         <ImageButton
             android:id="@+id/button_add_companion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:layout_above="@+id/button_start_navigation"
-            android:src="@drawable/ic_person_add_black_36dp"
-            android:background="@drawable/roundcorner"/>
-
+            android:layout_margin="10dp"
+            android:background="@drawable/roundcorner"
+            android:src="@drawable/ic_person_add_black_36dp" />
 
         <ImageButton
             android:id="@+id/button_destination"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:layout_above="@+id/button_start_navigation"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_flag_black_36dp"
-            android:background="@drawable/roundcorner"/>
-
+            android:layout_margin="10dp"
+            android:background="@drawable/roundcorner"
+            android:src="@drawable/ic_flag_black_36dp" />
 
         <ImageButton
             android:id="@+id/button_travelmode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:layout_above="@+id/button_start_navigation"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_transfer_within_a_station_black_36dp"
-            android:background="@drawable/roundcorner"/>
-
+            android:layout_margin="10dp"
+            android:background="@drawable/roundcorner"
+            android:src="@drawable/ic_transfer_within_a_station_black_36dp" />
 
         <Button
             android:id="@+id/button_start_navigation"
@@ -62,10 +55,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@android:color/holo_green_light"
-            android:text="@string/btn_text_start_navigation"/>
+            android:text="@string/btn_text_start_navigation" />
 
     </RelativeLayout>
-
 
 </RelativeLayout>
 

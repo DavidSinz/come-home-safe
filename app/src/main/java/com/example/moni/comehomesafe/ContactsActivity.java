@@ -32,6 +32,14 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
+
+        initLayout();
+        initDB();
+        initUI();
+        initContactList();
+    }
+
+    private void initLayout() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.contacts);
@@ -44,11 +52,6 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_contacts);
         navigationView.setNavigationItemSelectedListener(this);
-
-
-        initDB();
-        initUI();
-        initContactList();
     }
 
     @Override
@@ -135,14 +138,14 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
     private void removeContactAtPos(final int position) {
         if (contactItems.get(position) != null) {
             final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ContactsActivity.this);
-            alertDialog.setTitle("Ort löschen?");
-            alertDialog.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+            alertDialog.setTitle(R.string.delete_contact);
+            alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();
                 }
             });
-            alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            alertDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     db.removeContactItem(contactItems.get(position));
@@ -173,10 +176,6 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
 
     private void sortList() {
         contacts_adapter.notifyDataSetChanged();
-    }
-
-    public static ArrayList<ContactItem> getContactItems() {
-        return contactItems;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
