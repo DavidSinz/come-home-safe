@@ -133,7 +133,6 @@ public class MapsActivity extends FragmentActivity
                     if (which == i) {
                         String address = placesItems.get(which).getAdress();
                         destination = contactAddress(address);
-                        Log.d("destination: ", address);
                     }
                 }
             }
@@ -251,15 +250,13 @@ public class MapsActivity extends FragmentActivity
 
     private void setUpMyLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "GPS nicht aktiviert", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "GPS-Permission erforderlich", Toast.LENGTH_LONG).show();
             return;
         }
         if (mMap != null) {
             mMap.setMyLocationEnabled(true);
             if (mLocation != null) {
                 currentLocation = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-                Log.d("currentLocation map", currentLocation.toString());
-                ;
             }
         }
     }
@@ -276,11 +273,6 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mGoogleApiClient.connect();
-        /*if (mLocation != null) {
-            double latitude = mLocation.getLatitude();
-            double longitude = mLocation.getLongitude();
-            currentLocation = new LatLng(latitude, longitude);
-        }*/
     }
 
     @Override
