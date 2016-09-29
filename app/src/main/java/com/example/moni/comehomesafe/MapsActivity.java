@@ -55,6 +55,8 @@ public class MapsActivity extends FragmentActivity
     private GoogleApiClient mGoogleApiClient;
     private Location mLocation;
     private LocationManager locationManager;
+    private ContactListDatabase db_contacts;
+    private PlacesListDatabase db_places;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class MapsActivity extends FragmentActivity
         btnAddCompanion.setOnClickListener(this);
         btnStartNavigation = (Button) findViewById(R.id.button_start_navigation);
         btnStartNavigation.setOnClickListener(this);
+        initDB();
     }
 
     private void enableBtnStart() {
@@ -114,7 +117,7 @@ public class MapsActivity extends FragmentActivity
     }
 
     private void buildDestinationDialog() {
-        final ArrayList<PlacesItem> placesItems = PlacesActivity.getPlacesItems();
+        final ArrayList<PlacesItem> placesItems = db_places.getAllPlacesItems();
         final String[] places = new String[placesItems.size()];
         for (int i = 0; i < placesItems.size(); i++) {
             places[i] = placesItems.get(i).getAdress();
@@ -129,7 +132,7 @@ public class MapsActivity extends FragmentActivity
                 for (int i = 0; i < placesItems.size(); i++) {
                     if (which == i) {
                         String address = placesItems.get(which).getAdress();
-                        destination = concatAddress(address);
+                        destination = contactAddress(address);
                         Log.d("destination: ", address);
                     }
                 }
@@ -152,7 +155,7 @@ public class MapsActivity extends FragmentActivity
         return result;
     }
 
-    private String concatAddress(String address) {
+    private String contactAddress(String address) {
         String result = "";
         int count = 0;
         for (int i = 0; i < address.length(); i++) {
@@ -179,7 +182,7 @@ public class MapsActivity extends FragmentActivity
     }
 
     private void buildContactDialog() {
-        final ArrayList<ContactItem> contactItems = ContactsActivity.getContactItems();
+        final ArrayList<ContactItem> contactItems = db_contacts.getAllContactItems();
         String[] names = new String[contactItems.size()];
         for (int i = 0; i < contactItems.size(); i++) {
             names[i] = contactItems.get(i).getName();
@@ -293,5 +296,19 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    private void initDB() {
+        db_contacts = new ContactListDatabase(this);
+        db_places = new PlacesListDatabase(this);
+        db_contacts.open();
+        db_places.open();
+    }
+
+    @Override
+    protected void onDestroy() {
+        db_contacts.close();
+        db_places.close();
+        super.onDestroy();
     }
 }

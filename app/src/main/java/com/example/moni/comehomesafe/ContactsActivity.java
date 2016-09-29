@@ -28,8 +28,6 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
     public static final String KEY_RESULT = "contact";
     private static final int RESULT_SELECT_CONTACT = 000002;
 
-    public ContactsActivity() {}
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
