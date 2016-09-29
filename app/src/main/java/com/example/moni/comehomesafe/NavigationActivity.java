@@ -48,7 +48,7 @@ public class NavigationActivity extends FragmentActivity
     private static final long UPDATE_INTERVAL = 10000;
     private static final int WIDTH_POLYLINE = 8;
     private static final int CAMERA_ZOOM_LOCATION = 18;
-    private static final int MAX_TIME_DISCREPANCY = 500;
+    private static final int MAX_TIME_DISCREPANCY = 300;
     private static final double MAX_DISCREPANCY = 0.0003;
 
     private GoogleMap mMap;
@@ -63,6 +63,7 @@ public class NavigationActivity extends FragmentActivity
     private String travelmode;
     List<LatLng> polyline;
     private Marker mMarker;
+    private LatLng markerPosition;
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLocation;
@@ -91,10 +92,6 @@ public class NavigationActivity extends FragmentActivity
         getIntentExtras();
 
         createStartDialog();
-
-        //createAddress();
-
-        //startDownload();
 
         convertAddress();
     }
@@ -207,18 +204,21 @@ public class NavigationActivity extends FragmentActivity
                 double checkMaxLat = polyline.get(i).latitude + MAX_DISCREPANCY;
                 double checkMinLng = polyline.get(i).longitude - MAX_DISCREPANCY;
                 double checkMaxLng = polyline.get(i).longitude + MAX_DISCREPANCY;
+                boolean checkLat = (checkMinLat <= currentLocation.latitude && currentLocation.latitude <= checkMaxLat);
+                boolean checkLng = (checkMinLng <= currentLocation.longitude && currentLocation.longitude <= checkMaxLng);
                 Log.d("check currLoc", currentLocation.toString());
                 Log.d("check minLat", String.valueOf(checkMinLat));
                 Log.d("check maxLat", String.valueOf(checkMaxLat));
                 Log.d("check minLng", String.valueOf(checkMinLng));
                 Log.d("check maxLng", String.valueOf(checkMaxLng));
-                if (checkMinLat <= currentLocation.latitude && currentLocation.latitude <= checkMaxLat) {
+                if (checkLat) {
                     Log.d("check lat stimmt", "stimmt");
-                    if (checkMinLng <= currentLocation.longitude && currentLocation.longitude <= checkMaxLng) {
+                    if (checkLng) {
                         Log.d("check lng stimmt", "stimmt");
                         count = 0;
                         Log.d("count: ", String.valueOf(count));
                         Toast.makeText(this, "eingehalten", Toast.LENGTH_SHORT).show();
+                        markerPosition = new LatLng(polyline.get(i).latitude, polyline.get(i).longitude);
                         if (arrivedAtDestination()) {
                             //Toast.makeText(this, "Ziel erreicht", Toast.LENGTH_LONG).show();
                             //TODO Benachrichtigung
@@ -226,7 +226,7 @@ public class NavigationActivity extends FragmentActivity
                         }
                         break;
                     }
-                } else {
+                } if(!checkLat && !checkLng) {
                     Log.d("currentLocation check: ", currentLocation.toString());
                     count++;
                     Log.d("count: ", String.valueOf(count));
@@ -308,14 +308,14 @@ public class NavigationActivity extends FragmentActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startDownload();
+                dialog.cancel();
             }
         });
         dialog.setNegativeButton(R.string.dialog_btn_no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
                 //TODO Benachrichtigung
-                finish();
+                NavigationActivity.this.finish();
             }
         });
         dialog.show();
@@ -416,7 +416,6 @@ public class NavigationActivity extends FragmentActivity
         mLocation = location;
         if (mLocation != null) {
             checkForDiscrepancy();
-            //anstatt in onConnected oder zusätzlich?
             //startLocationUpdates();
             Log.d("onLocationChanged", "a");
 
@@ -428,10 +427,9 @@ public class NavigationActivity extends FragmentActivity
             startLng = currentLocation.longitude;
             Log.d("currentLocation nav ", currentLocation.toString());
             //update UI
-            if (mMarker != null) {
+            if (mMarker != null) { //setPosition(markerPosition) //bei Testing erwähnen
                 mMarker.setPosition(currentLocation);
             }
-            //mMap.addMarker(new MarkerOptions().position(currentLocation).title("aktuelle Position"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, CAMERA_ZOOM_LOCATION));
         }
     }

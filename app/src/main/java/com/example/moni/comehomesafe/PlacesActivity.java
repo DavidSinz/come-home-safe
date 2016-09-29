@@ -1,5 +1,7 @@
 package com.example.moni.comehomesafe;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -120,10 +122,24 @@ public class PlacesActivity extends AppCompatActivity implements NavigationView.
         updateList();
     }
 
-    private void removePlaceAtPos(int position) {
+    private void removePlaceAtPos(final int position) {
         if (placesItems.get(position) != null) {
-            db_places.removePlacesItem(placesItems.get(position));
-            updateList();
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(PlacesActivity.this);
+            alertDialog.setTitle("Ort löschen?");
+            alertDialog.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    db_places.removePlacesItem(placesItems.get(position));
+                    updateList();
+                }
+            });
+            alertDialog.show();
         }
     }
 
