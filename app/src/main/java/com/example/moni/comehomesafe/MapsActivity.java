@@ -168,15 +168,17 @@ public class MapsActivity extends FragmentActivity
             } else if (address.charAt(i) == ' ' && address.length() == i + 1) {
                 result = result.substring(0, result.length() - 1);
             }
-        }//result = deleteSpaces(result);
+        }
+        result = deleteSpaces(result);
         Log.d("result: ", result);
         return result;
     }
 
-    private String deleteSpaces(String result) {
-        for(int i = 0; i < result.length(); i++){
-            if(result.charAt(i) != ' '){
-                result += result.charAt(i);
+    private String deleteSpaces(String input) {
+        String result = "";
+        for(int i = 0; i < input.length(); i++){
+            if(input.charAt(i) != ' '){
+                result += input.charAt(i);
             }
         } return result;
     }
