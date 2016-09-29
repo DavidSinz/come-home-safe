@@ -41,6 +41,8 @@
     <string name="postleitzahl">Postleitzahl</string>
     <string name="stadt">Stadt</string>
     <string name="zu_orte_hunzug_gen">Zu Orte Hunzugügen</string>
+    <string name="places">Orte</string>
+    <string name="contacts">Kontakte</string>
 
     <string-array name="place_list">
         <item>Zuhause</item>
