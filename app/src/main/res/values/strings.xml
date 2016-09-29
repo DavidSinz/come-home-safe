@@ -17,14 +17,17 @@
     <string name="dialog_btn_yes">Ja</string>
     <string name="dialog_btn_no">Nein</string>
 
-    <string name="title_route_dialog">Abweichung von Route</string>
-    <string name="text_route_dialog">Möchtest du von hier aus eine neue Route starten?</string>
+    <string name="title_route_dialog">Abweichung von der Route</string>
+    <string name="text_route_dialog">Du bist von der Route abgewichen. Ist alles in Ordnung?</string>
 
     <string name="title_start_dialog">Losgehen</string>
     <string name="text_start_dialog">Möchtest du jetzt losgehen und deinen Begleiter benachrichtigen?</string>
 
     <string name="title_arrived_dialog">Gut angekommen?</string>
     <string name="text_arrived_dialog">Bist du gut angekommen und möchtest du deinen Begleiter benachrichtigen?</string>
+
+    <string name="dialog_btn_new_route">Ja, neue Route berechnen</string>
+    <string name="dialog_btn_contact_companion">Nein, Begleiter kontaktieren</string>
 
     <string name="dialog_btn_not_yet">Noch nicht</string>
 

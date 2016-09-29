@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.IOException;
 import java.util.List;
 
 public class NavigationActivity extends FragmentActivity
@@ -68,9 +69,9 @@ public class NavigationActivity extends FragmentActivity
     private GoogleApiClient mGoogleApiClient;
     private Location mLocation;
     private LocationManager locationManager;
-    //private LocationRequest mLocationRequest;
 
     SendSMS sms = new SendSMS();
+    Geocoder geocoder = new Geocoder(this);
 
     int count = 0;
 
@@ -169,7 +170,6 @@ public class NavigationActivity extends FragmentActivity
             destination = bundle.getString("DESTINATION");
             companion = bundle.getString("COMPANION");
             travelmode = bundle.getString("MODE");
-            Log.d("BUNDLE: ", bundle.toString());
         }
     }
 
@@ -186,7 +186,6 @@ public class NavigationActivity extends FragmentActivity
     @Override
     public void onDownloadFinished(List<LatLng> polyline) {
         this.polyline = polyline;
-        Log.d("polyline: ", this.polyline.toString());
         if (polyline != null) {
             PolylineOptions route = new PolylineOptions();
             route.addAll(polyline);
@@ -198,7 +197,6 @@ public class NavigationActivity extends FragmentActivity
 
     private void checkForDiscrepancy() {
         if (polyline != null) {
-            Log.d("polyline size", String.valueOf(polyline.size()));
             for (int i = 0; i < polyline.size(); i++) {
                 double checkMinLat = polyline.get(i).latitude - MAX_DISCREPANCY;
                 double checkMaxLat = polyline.get(i).latitude + MAX_DISCREPANCY;
@@ -206,33 +204,20 @@ public class NavigationActivity extends FragmentActivity
                 double checkMaxLng = polyline.get(i).longitude + MAX_DISCREPANCY;
                 boolean checkLat = (checkMinLat <= currentLocation.latitude && currentLocation.latitude <= checkMaxLat);
                 boolean checkLng = (checkMinLng <= currentLocation.longitude && currentLocation.longitude <= checkMaxLng);
-                Log.d("check currLoc", currentLocation.toString());
-                Log.d("check minLat", String.valueOf(checkMinLat));
-                Log.d("check maxLat", String.valueOf(checkMaxLat));
-                Log.d("check minLng", String.valueOf(checkMinLng));
-                Log.d("check maxLng", String.valueOf(checkMaxLng));
-                if (checkLat) {
-                    Log.d("check lat stimmt", "stimmt");
-                    if (checkLng) {
-                        Log.d("check lng stimmt", "stimmt");
-                        count = 0;
-                        Log.d("count: ", String.valueOf(count));
-                        Toast.makeText(this, "eingehalten", Toast.LENGTH_SHORT).show();
-                        markerPosition = new LatLng(polyline.get(i).latitude, polyline.get(i).longitude);
-                        if (arrivedAtDestination()) {
-                            //Toast.makeText(this, "Ziel erreicht", Toast.LENGTH_LONG).show();
-                            //TODO Benachrichtigung
-                            createArrivedDialog();
-                        }
-                        break;
+                if (checkLat && checkLng) {
+                    count = 0;
+                    //Toast
+                    Toast.makeText(this, "eingehalten", Toast.LENGTH_SHORT).show();
+                    //markerPosition = new LatLng(polyline.get(i).latitude, polyline.get(i).longitude);
+                    if (arrivedAtDestination()) {
+                        //TODO Benachrichtigung
+                        createArrivedDialog();
                     }
-                } if(!checkLat && !checkLng) {
-                    Log.d("currentLocation check: ", currentLocation.toString());
+                    break;
+                } else {
                     count++;
-                    Log.d("count: ", String.valueOf(count));
-                    if (count >= MAX_TIME_DISCREPANCY) { //Beispielwert, muss getestet werden; neue Routenberechnung starten?
+                    if (count >= MAX_TIME_DISCREPANCY) {
                         //TODO Benachrichtigung versenden etc.
-                        Log.d("Routenabweichung: ", String.valueOf(count));
                         Toast.makeText(this, "Routenabweichung", Toast.LENGTH_SHORT).show();
                         createNewRouteDialog();
                     }
@@ -241,16 +226,15 @@ public class NavigationActivity extends FragmentActivity
         }
     }
 
-    private boolean arrivedAtDestination(){
+    private boolean arrivedAtDestination() {
         boolean result = false;
-        //evtl. anderer Grenzwert für Ziel?
         double checkMinLat = currentLocation.latitude - MAX_DISCREPANCY;
         double checkMaxLat = currentLocation.latitude + MAX_DISCREPANCY;
         double checkMinLng = currentLocation.longitude - MAX_DISCREPANCY;
         double checkMaxLng = currentLocation.longitude + MAX_DISCREPANCY;
 
-        if(checkMinLat <= latDestination && latDestination <= checkMaxLat){
-            if(checkMinLng <= lngDestination && lngDestination <= checkMaxLng){
+        if (checkMinLat <= latDestination && latDestination <= checkMaxLat) {
+            if (checkMinLng <= lngDestination && lngDestination <= checkMaxLng) {
                 result = true;
             }
         }
@@ -261,7 +245,6 @@ public class NavigationActivity extends FragmentActivity
     private void convertAddress() {
         if (destination != null && !destination.isEmpty()) {
             try {
-                Geocoder geocoder = new Geocoder(this);
                 List<android.location.Address> addressList = geocoder.getFromLocationName(destination, 1);
                 if (addressList != null && addressList.size() > 0) {
                     latDestination = addressList.get(0).getLatitude();
@@ -274,7 +257,7 @@ public class NavigationActivity extends FragmentActivity
         }
     }
 
-    private void createArrivedDialog(){
+    private void createArrivedDialog() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(NavigationActivity.this);
         dialog.setTitle(R.string.title_arrived_dialog);
         dialog.setMessage(R.string.text_arrived_dialog);
@@ -295,7 +278,7 @@ public class NavigationActivity extends FragmentActivity
         dialog.show();
     }
 
-    private void sendArrivedMessage(){
+    private void sendArrivedMessage() {
         sms.sendMessage(companion, "Bin gut angekommen.");
     }
 
@@ -307,18 +290,29 @@ public class NavigationActivity extends FragmentActivity
         dialog.setPositiveButton(R.string.dialog_btn_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                startDownload();
                 dialog.cancel();
+                startDownload();
             }
         });
         dialog.setNegativeButton(R.string.dialog_btn_no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //TODO Benachrichtigung
-                NavigationActivity.this.finish();
+                sms.sendMessage(companion, ("Irgendetwas stimmt nicht. Mein Standort ist: " + getAddress() ));
             }
         });
         dialog.show();
+    }
+
+    private String getAddress() {
+        String result = "";
+        try {
+            List<android.location.Address> resultList = geocoder.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1);
+            if (resultList.size() > 0) {
+                result = String.valueOf(resultList.get(0));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } return result;
     }
 
     private void createGoogleApiClient() {
@@ -334,11 +328,10 @@ public class NavigationActivity extends FragmentActivity
     public void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
-        Log.d("onStart", "a");
     }
 
     @Override
-    public void onStop() { //evtl. if.isConnected()
+    public void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
     }
@@ -347,38 +340,23 @@ public class NavigationActivity extends FragmentActivity
     public void onConnected(Bundle bundle) {
         mGoogleApiClient.connect();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(NavigationActivity.this, "GPS nicht aktiviert", Toast.LENGTH_SHORT).show();
+            Toast.makeText(NavigationActivity.this, "GPS-Permission erforderlich", Toast.LENGTH_SHORT).show();
             return;
         }
         startLocationUpdates();
         mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        /*if (mLocation == null) {
-            startLocationUpdates();
-        }*/
 
         if (mLocation != null) {
-            Log.d("mLocation: ", mLocation.toString());
             double latitude = mLocation.getLatitude();
             double longitude = mLocation.getLongitude();
             currentLocation = new LatLng(latitude, longitude);
             startLat = currentLocation.latitude;
             startLng = currentLocation.longitude;
-            Log.d("currentLocation nav ", currentLocation.toString());
             startDownload();
-        }
-        Log.d("onConnected", "a");
-
-        if (mLocation != null) {
-            double latitude = mLocation.getLatitude();
-            double longitude = mLocation.getLongitude();
-            currentLocation = new LatLng(latitude, longitude);
             mMarker = mMap.addMarker(new MarkerOptions().position(currentLocation).title("aktuelle Position"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, CAMERA_ZOOM_LOCATION));
         }
-        //if(latDestination != 0 && lngDestination != 0){
-          mMap.addMarker(new MarkerOptions().position(destinationLatLng).title("Zielort"));
-
-        //}
+        mMap.addMarker(new MarkerOptions().position(destinationLatLng).title("Zielort"));
     }
 
     private void startLocationUpdates() {
@@ -388,27 +366,24 @@ public class NavigationActivity extends FragmentActivity
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(NavigationActivity.this, "GPS nicht aktiviert", Toast.LENGTH_SHORT).show();
+            Toast.makeText(NavigationActivity.this, "GPS-Permission erforderlich", Toast.LENGTH_SHORT).show();
             return;
         }
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
-        Log.d("startLocationUpdates", "a");
 
-        //die beiden neu: nötig?
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+        /*LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(mLocationRequest);
 
         PendingResult<LocationSettingsResult> result =
                 LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
-                        builder.build());
+                        builder.build());*/
     }
 
     @Override
     public void onConnectionSuspended(int i) {
         mGoogleApiClient.connect();
-        Log.d("onConnectionSuspended", "a");
     }
 
     @Override
@@ -416,16 +391,13 @@ public class NavigationActivity extends FragmentActivity
         mLocation = location;
         if (mLocation != null) {
             checkForDiscrepancy();
-            //startLocationUpdates();
-            Log.d("onLocationChanged", "a");
 
-            Log.d("mLocation: ", mLocation.toString());
             double latitude = mLocation.getLatitude();
             double longitude = mLocation.getLongitude();
             currentLocation = new LatLng(latitude, longitude);
             startLat = currentLocation.latitude;
             startLng = currentLocation.longitude;
-            Log.d("currentLocation nav ", currentLocation.toString());
+
             //update UI
             if (mMarker != null) { //setPosition(markerPosition) //bei Testing erwähnen
                 mMarker.setPosition(currentLocation);
@@ -446,8 +418,6 @@ public class NavigationActivity extends FragmentActivity
     }
 
     protected void stopLocationUpdates() {
-        //--> Fehlermeldung: GoogleApiClient is not connected yet
-        // LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
@@ -456,14 +426,12 @@ public class NavigationActivity extends FragmentActivity
     @Override
     public void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected() /*&& !mLocationRequest*/) {
+        if (mGoogleApiClient.isConnected()) {
             startLocationUpdates();
         }
-        Log.d("onResume", "a");
     }
 
     private String createAddress() {
-        Log.d("ADDRESS: ", ADDRESS + "origin=" + startLat + "," + startLng + "&destination=" + destination + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY);
         return (ADDRESS + "origin=" + startLat + "," + startLng + "&destination=" + destination + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY);
     }
 
