@@ -155,7 +155,6 @@ public class PlacesActivity extends AppCompatActivity implements NavigationView.
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_map) {
             Intent map = new Intent(this, MapsActivity.class);
             startActivity(map);
