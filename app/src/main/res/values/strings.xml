@@ -64,6 +64,8 @@
     <string name="cancel">Abbrechen</string>
     <string name="ok">OK</string>
     <string name="delete_contact">Kontakt löschen?</string>
+    <string name="nachricht_schreiben">Nachricht schreiben...</string>
+    <string name="senden">Senden</string>
 
     <string-array name="place_list">
         <item>Zuhause</item>

@@ -18,7 +18,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class ContactsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class ContactsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static ArrayList<ContactItem> contactItems = new ArrayList<>();
     private ContactListAdapter contacts_adapter;
@@ -174,7 +174,7 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
             startActivity(places);
             finish();
         } else if (id == R.id.nav_contacts) {
-            DrawerLayout drawer =(DrawerLayout) findViewById(R.id.drawer_layout3);
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout3);
             drawer.closeDrawer(GravityCompat.START);
         }
 

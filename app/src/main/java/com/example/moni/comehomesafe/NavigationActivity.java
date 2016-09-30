@@ -77,6 +77,13 @@ public class NavigationActivity extends FragmentActivity
     private Location mLocation;
     private LocationManager locationManager;
 
+    private String routeDeclaration = " Meine Route verläuft von " + getAddress() + " nach " + getDestinationAsString();
+    private String safeText1 = "Bei mir ist alles gut";
+    private String safeText2 = "Bei mir ist alles gut. Bin auf dem Weg nach Hause";
+    private String unsafeText1 = "Ich fühle mich nicht sicher!";
+    private String unsafeText2 = "Ich fühle nicht sicher. Hier ist mein Standort: " + getAddress();
+    private String tmdSetMessage = "Welche Nachricht willst du an " + companionName + " schicken?";
+
     SendSMS sms = new SendSMS();
     Geocoder geocoder = new Geocoder(this);
 
@@ -131,7 +138,7 @@ public class NavigationActivity extends FragmentActivity
     }
 
     private void sendStartMessage() {
-        sms.sendMessage(companion, String.valueOf(R.string.start_message + R.string.sent_from));
+        sms.sendMessage(companion, String.valueOf(R.string.start_message + routeDeclaration + R.string.sent_from));
         companionInformed();
     }
 
@@ -160,28 +167,25 @@ public class NavigationActivity extends FragmentActivity
     }
 
     private void textMessageDialog() {
-        final Dialog dialog = new Dialog(NavigationActivity.this);
-        dialog.setContentView(R.layout.text_message_dialog);
-        final TextView textView = (TextView) findViewById(R.id.message_dialog_companion);
-        textView.setText("Begleiter: " + companionName);
-        final EditText edittext = (EditText) findViewById(R.id.text_box);
-        final String message = edittext.getText().toString();
-        Button cancel = (Button) findViewById(R.id.message_cancel_dialog_button);
-        cancel.setOnClickListener(new View.OnClickListener() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(NavigationActivity.this);
+        alert.setTitle("Begleiter: " + companionName);
+        alert.setMessage(tmdSetMessage);
+        alert.setPositiveButton(safeText1, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            public void onClick(DialogInterface dialog, int which) {
+                sms.sendMessage(companion, safeText2);
+                dialog.cancel();
             }
         });
-        Button sendMessage = (Button) findViewById(R.id.message_send_dialog_button);
-        sendMessage.setOnClickListener(new View.OnClickListener() {
+        alert.setNegativeButton(unsafeText1, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                sms.sendMessage(companion, message);
-                dialog.dismiss();
+            public void onClick(DialogInterface dialog, int which) {
+                sms.sendMessage(companion, unsafeText2);
+                dialog.cancel();
             }
         });
-        dialog.show();
+        alert.create();
+        alert.show();
     }
 
     @Override
@@ -482,6 +486,16 @@ public class NavigationActivity extends FragmentActivity
 
     private String createAddress() {
         return (ADDRESS + "origin=" + startLat + "," + startLng + "&destination=" + destination + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY);
+    }
+
+    private String getDestinationAsString() {
+        String result = "";
+        for (int i = 0; i < destination.length(); i++) {
+            if (destination.charAt(i) != ',') {
+                result += destination.charAt(i);
+            } else result += " ";
+        }
+        return result;
     }
 
 }
