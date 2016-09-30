@@ -197,9 +197,8 @@ public class MapsActivity extends FragmentActivity
             public void onClick(DialogInterface dialog, int which) {
                 for (int i = 0; i < contactItems.size(); i++) {
                     if (which == i) {
-                        String number = contactItems.get(which).getNumber();
-                        companion = number;
-                        Log.d("companion: ", number);
+                        companion = contactItems.get(which).getNumber();
+                        companionName = contactItems.get(which).getName();
                     }
                 }
             }
@@ -211,6 +210,7 @@ public class MapsActivity extends FragmentActivity
         Bundle args = new Bundle();
         args.putString("DESTINATION", destination);
         args.putString("COMPANION", companion);
+        args.putString("COMPANION_NAME", companionName);
         args.putString("MODE", travelmode);
         Intent intentStartNav = new Intent(this, NavigationActivity.class);
         intentStartNav.putExtra("BUNDLE", args);

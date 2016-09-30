@@ -26,17 +26,12 @@
     <string name="title_arrived_dialog">Gut angekommen?</string>
     <string name="text_arrived_dialog">Bist du gut angekommen und möchtest du deinen Begleiter benachrichtigen?</string>
 
+
     <string name="dialog_btn_new_route">Ja, neue Route berechnen</string>
     <string name="dialog_btn_contact_companion">Nein, Begleiter kontaktieren</string>
 
     <string name="dialog_btn_not_yet">Noch nicht</string>
 
-    <string name="arrived_message">Bin gut angekommen.</string>
-    <string name="start_message">Bin unterwegs.</string>
-
-    <string name="sent_from"> - gesendet von ComeHomeSafe</string>
-    <string name="got_informed"> wurde benachrichtigt</string>
-    <string name="send_location">Irgendetwas stimmt nicht. Mein Standort ist: "</string>
     <string name="gps_required">GPS-Permission erforderlich</string>
     <string name="marker_current_location">aktuelle Position</string>
     <string name="marker_destination">Zielort</string>
