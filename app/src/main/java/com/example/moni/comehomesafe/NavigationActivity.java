@@ -1,6 +1,7 @@
 package com.example.moni.comehomesafe;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -18,7 +19,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.formats.NativeAd;
@@ -64,6 +67,7 @@ public class NavigationActivity extends FragmentActivity
     private LatLng destinationLatLng;
     private LatLng currentLocation;
     private String companion;
+    private String companionName;
     private String travelmode;
     List<LatLng> polyline;
     private Marker mMarker;
@@ -137,7 +141,7 @@ public class NavigationActivity extends FragmentActivity
         btnSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Methodenaufruf
+                textMessageDialog();
             }
         });
 
@@ -148,6 +152,31 @@ public class NavigationActivity extends FragmentActivity
                 createStopNavigationDialog();
             }
         });
+    }
+
+    private void textMessageDialog() {
+        final Dialog dialog = new Dialog(NavigationActivity.this);
+        dialog.setContentView(R.layout.text_message_dialog);
+        final TextView textView = (TextView) findViewById(R.id.message_dialog_companion);
+        textView.setText("Begleiter: " + companionName);
+        final EditText edittext = (EditText) findViewById(R.id.text_box);
+        final String message = edittext.getText().toString();
+        Button cancel = (Button) findViewById(R.id.message_cancel_dialog_button);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        Button sendMessage = (Button) findViewById(R.id.message_send_dialog_button);
+        sendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sms.sendMessage(companion, message);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override
@@ -180,6 +209,7 @@ public class NavigationActivity extends FragmentActivity
         if (bundle != null) {
             destination = bundle.getString("DESTINATION");
             companion = bundle.getString("COMPANION");
+            companionName = bundle.getString("COMPANIONNAME");
             travelmode = bundle.getString("MODE");
         }
     }

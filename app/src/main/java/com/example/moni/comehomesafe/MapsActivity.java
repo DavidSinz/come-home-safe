@@ -48,6 +48,7 @@ public class MapsActivity extends FragmentActivity
     private GoogleMap mMap;
     private String destination;
     private String companion;
+    private String companionName;
     private LatLng currentLocation;
     private String travelmode;
     private Button btnStartNavigation;
@@ -198,6 +199,7 @@ public class MapsActivity extends FragmentActivity
                     if (which == i) {
                         String number = contactItems.get(which).getNumber();
                         companion = number;
+                        companionName = contactItems.get(which).getName();
                         Log.d("companion: ", number);
                     }
                 }
@@ -210,6 +212,7 @@ public class MapsActivity extends FragmentActivity
         Bundle args = new Bundle();
         args.putString("DESTINATION", destination);
         args.putString("COMPANION", companion);
+        args.putString("COMPANIONNAME", companionName);
         args.putString("MODE", travelmode);
         Intent intentStartNav = new Intent(this, NavigationActivity.class);
         intentStartNav.putExtra("BUNDLE", args);

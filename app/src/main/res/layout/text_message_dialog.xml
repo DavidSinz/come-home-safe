@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:gravity="center_horizontal"
-        android:text="Begleiter"
         android:textSize="20sp" />
 
     <EditText
@@ -31,14 +30,14 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/message_cancel_button"
+            android:id="@+id/message_cancel_dialog_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:text="Abbrechen" />
 
         <Button
-            android:id="@+id/message_send_button"
+            android:id="@+id/message_send_dialog_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
