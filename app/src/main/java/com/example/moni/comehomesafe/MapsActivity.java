@@ -48,6 +48,7 @@ public class MapsActivity extends FragmentActivity
     private GoogleMap mMap;
     private String destination;
     private String companion;
+    private String companionName;
     private LatLng currentLocation;
     private String travelmode;
     private Button btnStartNavigation;
@@ -132,7 +133,7 @@ public class MapsActivity extends FragmentActivity
                 for (int i = 0; i < placesItems.size(); i++) {
                     if (which == i) {
                         String address = placesItems.get(which).getAdress();
-                        destination = contactAddress(address);
+                        destination = concatAddress(address);
                     }
                 }
             }
@@ -154,7 +155,7 @@ public class MapsActivity extends FragmentActivity
         return result;
     }
 
-    private String contactAddress(String address) {
+    private String concatAddress(String address) {
         String result = "";
         int count = 0;
         for (int i = 0; i < address.length(); i++) {
