@@ -221,7 +221,8 @@ public class NavigationActivity extends FragmentActivity
                     count = 0;
                     //Toast
                     Toast.makeText(this, "eingehalten", Toast.LENGTH_SHORT).show();
-                    //markerPosition = new LatLng(polyline.get(i).latitude, polyline.get(i).longitude);
+                    //markerPosition
+                    markerPosition = new LatLng(polyline.get(i).latitude, polyline.get(i).longitude);
                     if (arrivedAtDestination()) {
                         createArrivedDialog();
                     }
@@ -290,7 +291,7 @@ public class NavigationActivity extends FragmentActivity
     }
 
     private void sendArrivedMessage() {
-        sms.sendMessage(companion, String.valueOf(R.string.arrived_message + R.string.sent_from));
+        sms.sendMessage(companion, String.valueOf(R.string.arrived_message) + R.string.sent_from);
         companionInformed();
     }
 
@@ -421,8 +422,8 @@ public class NavigationActivity extends FragmentActivity
             startLng = currentLocation.longitude;
 
             //update UI
-            if (mMarker != null) { //setPosition(markerPosition) //bei Testing erwähnen
-                mMarker.setPosition(currentLocation);
+            if (mMarker != null && markerPosition != null) { //setPosition(markerPosition) //bei Testing erwähnen
+                mMarker.setPosition(markerPosition); //setPosition(currentLocation)
             }
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, CAMERA_ZOOM_LOCATION));
         }
