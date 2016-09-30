@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
@@ -17,8 +18,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -88,7 +91,7 @@ public class NavigationActivity extends FragmentActivity
 
         createGoogleApiClient();
 
-        initButton();
+        initButtons();
 
         getIntentExtras();
 
@@ -129,7 +132,15 @@ public class NavigationActivity extends FragmentActivity
         }
     }
 
-    private void initButton() {
+    private void initButtons() {
+        ImageButton btnSendMessage = (ImageButton) findViewById(R.id.button_send_message);
+        btnSendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Methodenaufruf
+            }
+        });
+
         Button btnStop = (Button) findViewById(R.id.button_stop_navigation);
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,11 +187,6 @@ public class NavigationActivity extends FragmentActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //LatLng startPos = new LatLng(startLat, startLng);
-        //mMap.addMarker(new MarkerOptions().position(startPos).title("your position"));
-        //null
-        //mMap.addMarker(new MarkerOptions().position(destination).title("your destination"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPos, CAMERA_ZOOM_LOCATION));
     }
 
     @Override
@@ -216,10 +222,11 @@ public class NavigationActivity extends FragmentActivity
                     break;
                 } else {
                     count++;
-                    if (count >= MAX_TIME_DISCREPANCY) {
+                    if (count == MAX_TIME_DISCREPANCY) {
                         //TODO Benachrichtigung versenden etc.
                         Toast.makeText(this, "Routenabweichung", Toast.LENGTH_SHORT).show();
                         createNewRouteDialog();
+                        count = 0;
                     }
                 }
             }
@@ -287,14 +294,14 @@ public class NavigationActivity extends FragmentActivity
         dialog.setTitle(R.string.title_route_dialog);
         dialog.setMessage(R.string.text_route_dialog);
         dialog.setCancelable(false);
-        dialog.setPositiveButton(R.string.dialog_btn_yes, new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton(R.string.dialog_btn_new_route, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
-                startDownload();
+                finish();
             }
         });
-        dialog.setNegativeButton(R.string.dialog_btn_no, new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton(R.string.dialog_btn_contact_companion, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 sms.sendMessage(companion, ("Irgendetwas stimmt nicht. Mein Standort ist: " + getAddress() ));
@@ -307,8 +314,22 @@ public class NavigationActivity extends FragmentActivity
         String result = "";
         try {
             List<android.location.Address> resultList = geocoder.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1);
+            Log.d("Address List: ", resultList.toString());
             if (resultList.size() > 0) {
-                result = String.valueOf(resultList.get(0));
+                String street = resultList.get(0).getThoroughfare();
+                String houseNumber = resultList.get(0).getSubThoroughfare();
+                String postalCode= resultList.get(0).getPostalCode();
+                String city = resultList.get(0).getLocality();
+                if(street != null){
+                    result = street + " ";
+                } if(houseNumber != null){
+                    result += houseNumber + " ";
+                } if(postalCode != null){
+                    result += postalCode + " ";
+                } if(city != null){
+                    result += city;
+                }
+                Log.d("result: ", result);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -372,13 +393,6 @@ public class NavigationActivity extends FragmentActivity
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
-
-        /*LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(mLocationRequest);
-
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
-                        builder.build());*/
     }
 
     @Override
