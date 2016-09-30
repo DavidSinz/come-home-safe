@@ -499,4 +499,14 @@ public class NavigationActivity extends FragmentActivity
         return (ADDRESS + "origin=" + startLat + "," + startLng + "&destination=" + destination + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY);
     }
 
+    private String getDestinationAsString() {
+        String result = "";
+        for (int i = 0; i < destination.length(); i++) {
+            if (destination.charAt(i) != ',') {
+                result += destination.charAt(i);
+            } else result += " ";
+        }
+        return  result;
+    }
+
 }
