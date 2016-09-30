@@ -45,8 +45,8 @@ public class MapsActivity extends FragmentActivity
     private static final String TITLE_PLACES_DIALOG = "Zielort auswählen";
     private static final String TITLE_CONTACT_DIALOG = "Kontakt auswählen";
     private static final String TITLE_TRAVEL_DIALOG = "Fortbewegungsmittel";
-    private static final long FASTEST_INTERVAL = 5000;
-    private static final long UPDATE_INTERVAL = 10000;
+    private static final String MODE_WALIKING = "walking";
+    private static final String MODE_DRIVING = "driving";
 
     private GoogleMap mMap;
     private String destination;
@@ -177,7 +177,6 @@ public class MapsActivity extends FragmentActivity
             }
         }
         result = deleteSpaces(result);
-        Log.d("result: ", result);
         return result;
     }
 
@@ -233,9 +232,9 @@ public class MapsActivity extends FragmentActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == WHICH_MODE_DIALOG) {
-                            travelmode = "walking";
+                            travelmode = MODE_WALIKING;
                         } else {
-                            travelmode = "driving";
+                            travelmode = MODE_DRIVING;
                         }
                     }
                 })
@@ -261,7 +260,7 @@ public class MapsActivity extends FragmentActivity
 
     private void setUpMyLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "GPS-Permission erforderlich", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.gps_required, Toast.LENGTH_LONG).show();
             return;
         }
         if (mMap != null) {
@@ -284,19 +283,6 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mGoogleApiClient.connect();
-
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        if (mGoogleApiClient.isConnected()) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(MapsActivity.this, R.string.gps_required, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
     }
 
     @Override
@@ -306,7 +292,7 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("onlocationchanged maps", String.valueOf(location));
+
 
     }
 
