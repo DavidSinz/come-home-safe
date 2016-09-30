@@ -146,24 +146,6 @@ public class PlacesActivity extends AppCompatActivity implements NavigationView.
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_places, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                sortList();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void sortList() {
         places_adapter.notifyDataSetChanged();
     }
@@ -177,12 +159,14 @@ public class PlacesActivity extends AppCompatActivity implements NavigationView.
         if (id == R.id.nav_map) {
             Intent map = new Intent(this, MapsActivity.class);
             startActivity(map);
+            finish();
         } else if (id == R.id.nav_places) {
-            Intent places = new Intent(this, PlacesActivity.class);
-            startActivity(places);
+            DrawerLayout drawer =(DrawerLayout) findViewById(R.id.drawer_layout2);
+            drawer.closeDrawer(GravityCompat.START);
         } else if (id == R.id.nav_contacts) {
             Intent contacts = new Intent(this, ContactsActivity.class);
             startActivity(contacts);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);

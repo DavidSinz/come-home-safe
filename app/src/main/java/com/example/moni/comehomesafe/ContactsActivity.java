@@ -156,24 +156,6 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_contacts, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                sortList();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void sortList() {
         contacts_adapter.notifyDataSetChanged();
     }
@@ -187,12 +169,14 @@ public class ContactsActivity extends AppCompatActivity implements NavigationVie
         if (id == R.id.nav_map) {
             Intent map = new Intent(this, MapsActivity.class);
             startActivity(map);
+            finish();
         } else if (id == R.id.nav_places) {
             Intent places = new Intent(this, PlacesActivity.class);
             startActivity(places);
+            finish();
         } else if (id == R.id.nav_contacts) {
-            Intent contacts = new Intent(this, ContactsActivity.class);
-            startActivity(contacts);
+            DrawerLayout drawer =(DrawerLayout) findViewById(R.id.drawer_layout3);
+            drawer.closeDrawer(GravityCompat.START);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout3);
