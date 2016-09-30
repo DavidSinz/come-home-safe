@@ -126,8 +126,13 @@ public class NavigationActivity extends FragmentActivity
         dialog.show();
     }
 
+    private void companionInformed(){
+        Toast.makeText(this, companionName + R.string.got_informed, Toast.LENGTH_LONG).show();
+    }
+
     private void sendStartMessage() {
-        sms.sendMessage(companion, "Bin unterwegs.");
+        sms.sendMessage(companion, String.valueOf(R.string.start_message + R.string.sent_from));
+        companionInformed();
     }
 
     private void startDownload() {
@@ -209,7 +214,6 @@ public class NavigationActivity extends FragmentActivity
         if (bundle != null) {
             destination = bundle.getString("DESTINATION");
             companion = bundle.getString("COMPANION");
-            companionName = bundle.getString("COMPANIONNAME");
             travelmode = bundle.getString("MODE");
         }
     }
@@ -246,14 +250,12 @@ public class NavigationActivity extends FragmentActivity
                     Toast.makeText(this, "eingehalten", Toast.LENGTH_SHORT).show();
                     //markerPosition = new LatLng(polyline.get(i).latitude, polyline.get(i).longitude);
                     if (arrivedAtDestination()) {
-                        //TODO Benachrichtigung
                         createArrivedDialog();
                     }
                     break;
                 } else {
                     count++;
                     if (count == MAX_TIME_DISCREPANCY) {
-                        //TODO Benachrichtigung versenden etc.
                         Toast.makeText(this, "Routenabweichung", Toast.LENGTH_SHORT).show();
                         createNewRouteDialog();
                         count = 0;
@@ -277,7 +279,6 @@ public class NavigationActivity extends FragmentActivity
         }
         return result;
     }
-
 
     private void convertAddress() {
         if (destination != null && !destination.isEmpty()) {
@@ -316,7 +317,8 @@ public class NavigationActivity extends FragmentActivity
     }
 
     private void sendArrivedMessage() {
-        sms.sendMessage(companion, "Bin gut angekommen.");
+        sms.sendMessage(companion, String.valueOf(R.string.arrived_message + R.string.sent_from));
+        companionInformed();
     }
 
     private void createNewRouteDialog() {
@@ -334,17 +336,21 @@ public class NavigationActivity extends FragmentActivity
         dialog.setNegativeButton(R.string.dialog_btn_contact_companion, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                sms.sendMessage(companion, ("Irgendetwas stimmt nicht. Mein Standort ist: " + getAddress() ));
+                sendLocation();
             }
         });
         dialog.show();
+    }
+
+    private void sendLocation(){
+        sms.sendMessage(companion, (R.string.send_location + getAddress() ) + R.string.sent_from);
+        companionInformed();
     }
 
     private String getAddress() {
         String result = "";
         try {
             List<android.location.Address> resultList = geocoder.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1);
-            Log.d("Address List: ", resultList.toString());
             if (resultList.size() > 0) {
                 String street = resultList.get(0).getThoroughfare();
                 String houseNumber = resultList.get(0).getSubThoroughfare();
@@ -359,7 +365,6 @@ public class NavigationActivity extends FragmentActivity
                 } if(city != null){
                     result += city;
                 }
-                Log.d("result: ", result);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -391,7 +396,7 @@ public class NavigationActivity extends FragmentActivity
     public void onConnected(Bundle bundle) {
         mGoogleApiClient.connect();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(NavigationActivity.this, "GPS-Permission erforderlich", Toast.LENGTH_SHORT).show();
+            Toast.makeText(NavigationActivity.this, R.string.gps_required, Toast.LENGTH_SHORT).show();
             return;
         }
         startLocationUpdates();
@@ -404,10 +409,10 @@ public class NavigationActivity extends FragmentActivity
             startLat = currentLocation.latitude;
             startLng = currentLocation.longitude;
             startDownload();
-            mMarker = mMap.addMarker(new MarkerOptions().position(currentLocation).title("aktuelle Position"));
+            mMarker = mMap.addMarker(new MarkerOptions().position(currentLocation).title(String.valueOf(R.string.marker_current_location)));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, CAMERA_ZOOM_LOCATION));
         }
-        mMap.addMarker(new MarkerOptions().position(destinationLatLng).title("Zielort"));
+        mMap.addMarker(new MarkerOptions().position(destinationLatLng).title(String.valueOf(R.string.marker_destination)));
     }
 
     private void startLocationUpdates() {
@@ -417,7 +422,7 @@ public class NavigationActivity extends FragmentActivity
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(NavigationActivity.this, "GPS-Permission erforderlich", Toast.LENGTH_SHORT).show();
+            Toast.makeText(NavigationActivity.this, R.string.gps_required, Toast.LENGTH_SHORT).show();
             return;
         }
         if (mGoogleApiClient.isConnected()) {
