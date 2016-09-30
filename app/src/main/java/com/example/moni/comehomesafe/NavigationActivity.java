@@ -45,12 +45,20 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.io.IOException;
 import java.util.List;
 
+import static com.google.android.gms.analytics.internal.zzy.n;
+
 public class NavigationActivity extends FragmentActivity
         implements OnMapReadyCallback, DownloadListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private static final String ADDRESS = "https://maps.googleapis.com/maps/api/directions/json?";
     private static final String GOOGLE_DIRECTIONS_KEY = "AIzaSyC9a7v6ZEyOdTCU48xfJpDsew-1TXcZn7Q";
+    private static final String START_MESSAGE = "Bin unterwegs.";
+    private static final String ARRIVED_MESSAGE = "Bin gut angekommen.";
+    private static final String SENT_FROM = " - gesendet von ComeHomeSafe";
+    private static final String COMPANION_INFORMED = " wurde benachrichtigt";
+    private static final String SEND_LOCATION = "Irgendetwas stimmt nicht. Mein Standort ist: ";
+
     private static final long FASTEST_INTERVAL = 5000;
     private static final long UPDATE_INTERVAL = 10000;
     private static final int WIDTH_POLYLINE = 8;
@@ -133,12 +141,12 @@ public class NavigationActivity extends FragmentActivity
         dialog.show();
     }
 
-    private void companionInformed(){
-        Toast.makeText(this, companionName + R.string.got_informed, Toast.LENGTH_LONG).show();
+    private void companionInformed() {
+        Toast.makeText(this, (companionName + COMPANION_INFORMED), Toast.LENGTH_LONG).show();
     }
 
     private void sendStartMessage() {
-        sms.sendMessage(companion, String.valueOf(R.string.start_message + routeDeclaration + R.string.sent_from));
+        sms.sendMessage(companion, (START_MESSAGE + routeDeclaration + SENT_FROM));
         companionInformed();
     }
 
@@ -218,6 +226,7 @@ public class NavigationActivity extends FragmentActivity
         if (bundle != null) {
             destination = bundle.getString("DESTINATION");
             companion = bundle.getString("COMPANION");
+            companionName = bundle.getString("COMPANION_NAME");
             travelmode = bundle.getString("MODE");
         }
     }
@@ -250,9 +259,7 @@ public class NavigationActivity extends FragmentActivity
                 boolean checkLng = (checkMinLng <= currentLocation.longitude && currentLocation.longitude <= checkMaxLng);
                 if (checkLat && checkLng) {
                     count = 0;
-                    //Toast
-                    Toast.makeText(this, "eingehalten", Toast.LENGTH_SHORT).show();
-                    //markerPosition = new LatLng(polyline.get(i).latitude, polyline.get(i).longitude);
+                    markerPosition = new LatLng(polyline.get(i).latitude, polyline.get(i).longitude);
                     if (arrivedAtDestination()) {
                         createArrivedDialog();
                     }
@@ -260,7 +267,7 @@ public class NavigationActivity extends FragmentActivity
                 } else {
                     count++;
                     if (count == MAX_TIME_DISCREPANCY) {
-                        Toast.makeText(this, "Routenabweichung", Toast.LENGTH_SHORT).show();
+                        markerPosition = currentLocation;
                         createNewRouteDialog();
                         count = 0;
                     }
@@ -321,7 +328,7 @@ public class NavigationActivity extends FragmentActivity
     }
 
     private void sendArrivedMessage() {
-        sms.sendMessage(companion, String.valueOf(R.string.arrived_message + R.string.sent_from));
+        sms.sendMessage(companion, ARRIVED_MESSAGE + SENT_FROM);
         companionInformed();
     }
 
@@ -346,8 +353,8 @@ public class NavigationActivity extends FragmentActivity
         dialog.show();
     }
 
-    private void sendLocation(){
-        sms.sendMessage(companion, (R.string.send_location + getAddress() ) + R.string.sent_from);
+    private void sendLocation() {
+        sms.sendMessage(companion, SEND_LOCATION + getAddress() + SENT_FROM);
         companionInformed();
     }
 
@@ -358,21 +365,25 @@ public class NavigationActivity extends FragmentActivity
             if (resultList.size() > 0) {
                 String street = resultList.get(0).getThoroughfare();
                 String houseNumber = resultList.get(0).getSubThoroughfare();
-                String postalCode= resultList.get(0).getPostalCode();
+                String postalCode = resultList.get(0).getPostalCode();
                 String city = resultList.get(0).getLocality();
-                if(street != null){
+                if (street != null) {
                     result = street + " ";
-                } if(houseNumber != null){
+                }
+                if (houseNumber != null) {
                     result += houseNumber + " ";
-                } if(postalCode != null){
+                }
+                if (postalCode != null) {
                     result += postalCode + " ";
-                } if(city != null){
+                }
+                if (city != null) {
                     result += city;
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } return result;
+        }
+        return result;
     }
 
     private void createGoogleApiClient() {
@@ -452,10 +463,10 @@ public class NavigationActivity extends FragmentActivity
             startLng = currentLocation.longitude;
 
             //update UI
-            if (mMarker != null) { //setPosition(markerPosition) //bei Testing erwähnen
-                mMarker.setPosition(currentLocation);
+            if (mMarker != null && markerPosition != null) { //setPosition(markerPosition) //bei Testing erwähnen
+                mMarker.setPosition(markerPosition);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, CAMERA_ZOOM_LOCATION));
             }
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, CAMERA_ZOOM_LOCATION));
         }
     }
 
@@ -486,16 +497,6 @@ public class NavigationActivity extends FragmentActivity
 
     private String createAddress() {
         return (ADDRESS + "origin=" + startLat + "," + startLng + "&destination=" + destination + "&mode=" + travelmode + "&key=" + GOOGLE_DIRECTIONS_KEY);
-    }
-
-    private String getDestinationAsString() {
-        String result = "";
-        for (int i = 0; i < destination.length(); i++) {
-            if (destination.charAt(i) != ',') {
-                result += destination.charAt(i);
-            } else result += " ";
-        }
-        return result;
     }
 
 }
