@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,6 +45,8 @@ public class MapsActivity extends FragmentActivity
     private static final String TITLE_PLACES_DIALOG = "Zielort auswählen";
     private static final String TITLE_CONTACT_DIALOG = "Kontakt auswählen";
     private static final String TITLE_TRAVEL_DIALOG = "Fortbewegungsmittel";
+    private static final long FASTEST_INTERVAL = 5000;
+    private static final long UPDATE_INTERVAL = 10000;
 
     private GoogleMap mMap;
     private String destination;
@@ -71,6 +74,8 @@ public class MapsActivity extends FragmentActivity
         createGoogleApiClient();
 
         initButtons();
+
+        enableBtnStart();
     }
 
     private void initButtons() {
@@ -86,7 +91,7 @@ public class MapsActivity extends FragmentActivity
     }
 
     private void enableBtnStart() {
-        if (companion != null && destination != null && travelmode != null) {
+        if (companion != null && destination != null) {
             btnStartNavigation.setEnabled(true);
         } else {
             btnStartNavigation.setEnabled(false);
@@ -98,14 +103,17 @@ public class MapsActivity extends FragmentActivity
         switch (v.getId()) {
             case R.id.button_travelmode:
                 buildTravelDialog();
+                enableBtnStart();
                 break;
 
             case R.id.button_destination:
                 buildDestinationDialog();
+                enableBtnStart();
                 break;
 
             case R.id.button_add_companion:
                 buildContactDialog();
+                enableBtnStart();
                 break;
 
             case R.id.button_start_navigation:
@@ -162,8 +170,7 @@ public class MapsActivity extends FragmentActivity
             if (address.charAt(i) == '/' && count == 0) {
                 result = address.substring(i + 1, address.length());
                 count = i;
-            }
-            else if (address.charAt(i) == '/' && count != 0) {
+            } else if (address.charAt(i) == '/' && count != 0) {
                 result = result.substring(0, i - count - 1) + "," + result.substring(i - count, result.length());
             } else if (address.charAt(i) == ' ' && address.length() == i + 1) {
                 result = result.substring(0, result.length() - 1);
@@ -176,11 +183,12 @@ public class MapsActivity extends FragmentActivity
 
     private String deleteSpaces(String input) {
         String result = "";
-        for(int i = 0; i < input.length(); i++){
-            if(input.charAt(i) != ' '){
+        for (int i = 0; i < input.length(); i++) {
+            if (input.charAt(i) != ' ') {
                 result += input.charAt(i);
             }
-        } return result;
+        }
+        return result;
     }
 
     private void buildContactDialog() {
@@ -276,15 +284,29 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mGoogleApiClient.connect();
+
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        if (mGoogleApiClient.isConnected()) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(MapsActivity.this, R.string.gps_required, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        mGoogleApiClient.connect();
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d("onlocationchanged maps", String.valueOf(location));
 
     }
 
